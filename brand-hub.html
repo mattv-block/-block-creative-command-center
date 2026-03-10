@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Hub</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f4f0;
+  --surface:#ffffff;
+  --surface2:#eeede9;
+  --text:#0f0f0f;
+  --text2:#555550;
+  --text3:#99998f;
+  --border:#0f0f0f;
+  --border-light:#d8d7d2;
+  --accent:#0f0f0f;
+  --accent-inv:#f5f4f0;
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;font-size:14px}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:0}
+
+/* ── HEADER ── */
+.app-header{
+  display:flex;align-items:stretch;height:52px;
+  border-bottom:1.5px solid var(--border);
+  flex-shrink:0;background:var(--bg);
+}
+.header-brand{
+  display:flex;align-items:center;padding:0 24px;
+  border-right:1.5px solid var(--border);
+  flex-shrink:0;gap:10px;
+}
+.brand-mark{
+  font-size:11px;font-weight:900;letter-spacing:2px;
+  text-transform:uppercase;line-height:1;
+}
+.brand-mark .slash{opacity:.35;margin:0 2px}
+.header-nav{
+  display:flex;align-items:stretch;flex:1;
+}
+.nav-tab{
+  display:flex;align-items:center;gap:7px;
+  padding:0 20px;border:none;background:transparent;
+  color:var(--text2);font-size:12px;font-weight:600;
+  letter-spacing:.6px;text-transform:uppercase;cursor:pointer;
+  border-right:1px solid var(--border-light);
+  transition:background .15s,color .15s;
+  white-space:nowrap;
+}
+.nav-tab:hover{background:var(--surface2);color:var(--text)}
+.nav-tab.active{background:var(--text);color:var(--bg)}
+.nav-tab i{font-size:11px}
+.header-right{
+  display:flex;align-items:center;padding:0 20px;
+  border-left:1.5px solid var(--border);flex-shrink:0;gap:10px;
+}
+.header-date{font-size:11px;color:var(--text2);font-weight:500;letter-spacing:.3px}
+
+/* ── LAYOUT ── */
+.app-main{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.tab-content{display:none;flex:1;overflow:hidden;flex-direction:column}
+.tab-content.active{display:flex}
+
+/* ── SHARED COMPONENTS ── */
+.toolbar{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 24px;border-bottom:1px solid var(--border-light);
+  flex-shrink:0;flex-wrap:wrap;
+}
+.search-wrap{
+  display:flex;align-items:center;gap:8px;
+  border:1px solid var(--border);background:var(--surface);
+  padding:0 12px;height:34px;flex:1;max-width:360px;
+}
+.search-wrap i{font-size:11px;color:var(--text3)}
+.search-wrap input{
+  border:none;outline:none;background:transparent;
+  color:var(--text);font-size:13px;font-family:inherit;flex:1;
+}
+.search-wrap input::placeholder{color:var(--text3)}
+.chips{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.chip{
+  padding:5px 12px;border:1px solid var(--border-light);
+  background:transparent;color:var(--text2);font-size:11px;
+  font-weight:600;letter-spacing:.4px;text-transform:uppercase;
+  cursor:pointer;transition:all .15s;font-family:inherit;
+}
+.chip:hover{border-color:var(--border);color:var(--text)}
+.chip.active{background:var(--text);border-color:var(--text);color:var(--bg)}
+.sort-select{
+  border:1px solid var(--border-light);background:var(--surface);
+  color:var(--text);font-size:11px;font-weight:600;letter-spacing:.4px;
+  text-transform:uppercase;padding:5px 10px;cursor:pointer;
+  font-family:inherit;outline:none;height:34px;
+}
+.scroll-area{flex:1;overflow-y:auto;padding:24px}
+.section-label{
+  font-size:10px;font-weight:800;letter-spacing:2px;
+  text-transform:uppercase;color:var(--text2);
+  margin-bottom:14px;padding-bottom:10px;
+  border-bottom:1px solid var(--border-light);
+}
+.empty-state{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:80px 24px;color:var(--text3);gap:12px;
+}
+.empty-state i{font-size:32px}
+.empty-state p{font-size:13px;font-weight:500}
+
+/* ── TAG PILLS ── */
+.tag{
+  display:inline-block;padding:2px 7px;
+  border:1px solid var(--border-light);
+  font-size:10px;font-weight:600;letter-spacing:.3px;
+  text-transform:uppercase;color:var(--text2);
+}
+
+/* ── HOME ── */
+#tab-home{overflow-y:auto}
+.home-hero{
+  padding:64px 48px 48px;
+  border-bottom:1px solid var(--border-light);
+}
+.home-eyebrow{
+  font-size:10px;font-weight:800;letter-spacing:3px;
+  text-transform:uppercase;color:var(--text2);margin-bottom:20px;
+}
+.home-headline{
+  font-size:clamp(36px,5vw,72px);font-weight:900;
+  line-height:1;letter-spacing:-2px;
+  text-transform:uppercase;
+}
+.home-headline .slash{opacity:.25}
+.home-sub{
+  margin-top:20px;font-size:15px;color:var(--text2);
+  max-width:520px;line-height:1.6;
+}
+.home-sections{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-bottom:1px solid var(--border-light);
+}
+@media(max-width:900px){.home-sections{grid-template-columns:repeat(2,1fr)}}
+.home-section-tile{
+  padding:28px 32px;border-right:1px solid var(--border-light);
+  cursor:pointer;transition:background .15s;
+}
+.home-section-tile:last-child{border-right:none}
+.home-section-tile:hover{background:var(--surface2)}
+.tile-icon{font-size:20px;margin-bottom:14px;opacity:.7}
+.tile-name{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.tile-count{font-size:28px;font-weight:900;line-height:1;margin-bottom:8px}
+.tile-desc{font-size:12px;color:var(--text2);line-height:1.5}
+.tile-arrow{margin-top:14px;font-size:11px;font-weight:700;letter-spacing:.5px;opacity:.5}
+.home-upcoming{padding:32px 48px}
+.upcoming-header{
+  display:flex;align-items:baseline;gap:16px;margin-bottom:20px;
+}
+.upcoming-title{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+.upcoming-subtitle{font-size:12px;color:var(--text2)}
+.upcoming-strip{display:flex;gap:16px;flex-wrap:wrap}
+.upcoming-card{
+  border:1px solid var(--border-light);background:var(--surface);
+  padding:18px 20px;flex:1;min-width:240px;max-width:340px;
+  cursor:pointer;transition:border-color .15s;
+}
+.upcoming-card:hover{border-color:var(--border)}
+.upcoming-format{
+  font-size:9px;font-weight:800;letter-spacing:2px;
+  text-transform:uppercase;color:var(--text2);margin-bottom:8px;
+}
+.upcoming-session-title{font-size:14px;font-weight:700;margin-bottom:6px;line-height:1.3}
+.upcoming-date{font-size:12px;color:var(--text2)}
+.upcoming-presenters{font-size:11px;color:var(--text3);margin-top:4px}
+
+/* ── DAM ── */
+.dam-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:1px;background:var(--border-light);
+}
+.dam-grid-wrap{background:var(--bg)}
+.asset-card{
+  background:var(--surface);padding:0;cursor:pointer;
+  transition:background .15s;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.asset-card:hover{background:var(--surface2)}
+.asset-thumb{
+  width:100%;aspect-ratio:4/3;object-fit:cover;
+  display:block;border-bottom:1px solid var(--border-light);
+}
+.asset-thumb-placeholder{
+  width:100%;aspect-ratio:4/3;
+  background:var(--surface2);border-bottom:1px solid var(--border-light);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text3);font-size:24px;
+}
+.asset-body{padding:14px 16px;flex:1;display:flex;flex-direction:column;gap:8px}
+.asset-category{
+  font-size:9px;font-weight:800;letter-spacing:2px;
+  text-transform:uppercase;color:var(--text2);
+}
+.asset-title{font-size:13px;font-weight:700;line-height:1.3}
+.asset-meta{font-size:11px;color:var(--text3)}
+.asset-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:2px}
+.asset-footer{
+  padding:10px 16px;border-top:1px solid var(--border-light);
+  display:flex;gap:6px;flex-wrap:wrap;
+}
+.asset-link{
+  font-size:10px;font-weight:700;letter-spacing:.4px;
+  text-transform:uppercase;color:var(--text);text-decoration:none;
+  padding:4px 8px;border:1px solid var(--border-light);
+  transition:all .15s;
+}
+.asset-link:hover{background:var(--text);color:var(--bg);border-color:var(--text)}
+
+/* ── WORKFLOWS ── */
+.wf-list{display:flex;flex-direction:column;gap:0;background:var(--border-light)}
+.wf-card{
+  background:var(--surface);display:flex;gap:0;
+  cursor:pointer;transition:background .15s;
+  border-bottom:none;
+}
+.wf-card:hover{background:var(--surface2)}
+.wf-thumb-wrap{width:220px;flex-shrink:0;position:relative;overflow:hidden}
+.wf-thumb{width:100%;height:100%;object-fit:cover;display:block}
+.wf-thumb-placeholder{
+  width:100%;height:100%;background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text3);font-size:28px;min-height:140px;
+}
+.wf-body{flex:1;padding:20px 24px;display:flex;flex-direction:column;gap:10px;border-left:1px solid var(--border-light)}
+.wf-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.wf-title{font-size:16px;font-weight:800;line-height:1.2}
+.wf-badges{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.wf-diff{
+  font-size:9px;font-weight:800;letter-spacing:1.5px;
+  text-transform:uppercase;padding:3px 8px;border:1px solid;
+}
+.diff-beginner{color:#2d7a4f;border-color:#2d7a4f}
+.diff-intermediate{color:#7a5e2d;border-color:#7a5e2d}
+.diff-advanced{color:#7a2d2d;border-color:#7a2d2d}
+.wf-time{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px}
+.wf-summary{font-size:13px;color:var(--text2);line-height:1.55;max-width:640px}
+.wf-footer{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.wf-author{font-size:11px;color:var(--text3)}
+.wf-links{display:flex;gap:6px}
+.wf-link{
+  font-size:10px;font-weight:700;letter-spacing:.4px;
+  text-transform:uppercase;color:var(--text);text-decoration:none;
+  padding:4px 8px;border:1px solid var(--border-light);
+  transition:all .15s;
+}
+.wf-link:hover{background:var(--text);color:var(--bg);border-color:var(--text)}
+.wf-expand{
+  margin-top:0;border-top:1px solid var(--border-light);
+  padding:20px 24px;background:var(--bg);display:none;
+}
+.wf-expand.open{display:block}
+.wf-steps-label{
+  font-size:10px;font-weight:800;letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:14px;color:var(--text2);
+}
+.wf-steps{display:flex;flex-direction:column;gap:10px}
+.wf-step{display:flex;gap:12px;align-items:flex-start}
+.step-num{
+  width:22px;height:22px;border:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:800;flex-shrink:0;margin-top:1px;
+}
+.step-text{font-size:13px;color:var(--text2);line-height:1.5;padding-top:1px}
+.wf-tags{display:flex;gap:4px;flex-wrap:wrap}
+
+/* ── RESOURCES ── */
+.res-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:1px;background:var(--border-light);
+}
+.res-card{
+  background:var(--surface);padding:22px 24px;
+  display:flex;flex-direction:column;gap:10px;
+  cursor:pointer;transition:background .15s;
+}
+.res-card:hover{background:var(--surface2)}
+.res-category{
+  font-size:9px;font-weight:800;letter-spacing:2px;
+  text-transform:uppercase;color:var(--text2);
+}
+.res-name{font-size:15px;font-weight:800;line-height:1.2}
+.res-desc{font-size:12px;color:var(--text2);line-height:1.6;flex:1}
+.res-tags{display:flex;gap:4px;flex-wrap:wrap}
+.res-link{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:10px;font-weight:800;letter-spacing:.5px;
+  text-transform:uppercase;color:var(--text);text-decoration:none;
+  padding:7px 12px;border:1.5px solid var(--border);
+  transition:all .15s;align-self:flex-start;margin-top:4px;
+}
+.res-link:hover{background:var(--text);color:var(--bg)}
+
+/* ── EDUCATION ── */
+.edu-sections{display:flex;flex-direction:column;gap:32px}
+.edu-group-label{
+  font-size:10px;font-weight:800;letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:14px;
+  padding-bottom:10px;border-bottom:1px solid var(--border-light);
+  color:var(--text2);
+}
+.edu-list{display:flex;flex-direction:column;gap:1px;background:var(--border-light)}
+.edu-card{
+  background:var(--surface);padding:20px 24px;
+  display:flex;gap:24px;align-items:flex-start;
+  cursor:default;
+}
+.edu-date-block{
+  width:72px;flex-shrink:0;text-align:center;
+  border:1px solid var(--border-light);padding:10px 6px;
+}
+.edu-month{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--text2)}
+.edu-day{font-size:26px;font-weight:900;line-height:1;margin:2px 0}
+.edu-time{font-size:9px;color:var(--text3);font-weight:600}
+.edu-body{flex:1;display:flex;flex-direction:column;gap:7px}
+.edu-header-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.edu-title{font-size:15px;font-weight:800;line-height:1.2}
+.edu-format{
+  font-size:9px;font-weight:800;letter-spacing:1.5px;
+  text-transform:uppercase;padding:3px 8px;
+  border:1px solid var(--border-light);color:var(--text2);
+  flex-shrink:0;margin-top:2px;
+}
+.edu-desc{font-size:12px;color:var(--text2);line-height:1.6;max-width:600px}
+.edu-presenters{font-size:11px;color:var(--text3)}
+.edu-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.edu-action{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:700;letter-spacing:.4px;
+  text-transform:uppercase;color:var(--text);text-decoration:none;
+  padding:5px 10px;border:1px solid var(--border-light);
+  transition:all .15s;cursor:pointer;background:transparent;font-family:inherit;
+}
+.edu-action:hover{background:var(--text);color:var(--bg);border-color:var(--text)}
+.edu-action.primary{background:var(--text);color:var(--bg);border-color:var(--text)}
+.edu-action.primary:hover{opacity:.8}
+.edu-tags{display:flex;gap:4px;flex-wrap:wrap}
+
+/* ── MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(15,15,15,.6);
+  z-index:100;display:none;align-items:flex-start;
+  justify-content:center;padding:40px 24px;overflow-y:auto;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--surface);border:1.5px solid var(--border);
+  width:100%;max-width:640px;margin:auto;
+  display:flex;flex-direction:column;
+}
+.modal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 24px;border-bottom:1px solid var(--border-light);
+}
+.modal-title{font-size:18px;font-weight:800;line-height:1.2;flex:1;margin-right:16px}
+.modal-close{
+  width:32px;height:32px;border:1px solid var(--border-light);
+  background:transparent;cursor:pointer;display:flex;
+  align-items:center;justify-content:center;font-size:14px;
+  flex-shrink:0;color:var(--text);font-family:inherit;
+  transition:all .15s;
+}
+.modal-close:hover{background:var(--text);color:var(--bg);border-color:var(--text)}
+.modal-body{padding:24px}
+.modal-thumb{
+  width:100%;aspect-ratio:16/9;object-fit:cover;
+  border-bottom:1px solid var(--border-light);display:block;
+}
+.modal-meta{
+  display:flex;gap:16px;flex-wrap:wrap;
+  padding:14px 0;border-bottom:1px solid var(--border-light);
+  margin-bottom:16px;
+}
+.modal-meta-item{display:flex;flex-direction:column;gap:2px}
+.meta-label{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--text2)}
+.meta-value{font-size:13px;font-weight:600}
+.modal-desc{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:16px}
+.modal-links{display:flex;gap:8px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="app-header">
+  <div class="header-brand">
+    <div class="brand-mark">Brand<span class="slash"> // </span>Hub</div>
+  </div>
+  <nav class="header-nav">
+    <button class="nav-tab active" onclick="showTab('home')" id="btn-home">
+      <i class="fa-solid fa-house"></i> Home
+    </button>
+    <button class="nav-tab" onclick="showTab('dam')" id="btn-dam">
+      <i class="fa-solid fa-layer-group"></i> DAM
+    </button>
+    <button class="nav-tab" onclick="showTab('workflows')" id="btn-workflows">
+      <i class="fa-solid fa-wand-magic-sparkles"></i> Workflows
+    </button>
+    <button class="nav-tab" onclick="showTab('resources')" id="btn-resources">
+      <i class="fa-solid fa-bookmark"></i> Resources
+    </button>
+    <button class="nav-tab" onclick="showTab('education')" id="btn-education">
+      <i class="fa-solid fa-graduation-cap"></i> Education
+    </button>
+  </nav>
+  <div class="header-right">
+    <span class="header-date" id="header-date"></span>
+  </div>
+</header>
+
+<main class="app-main">
+
+  <!-- HOME TAB -->
+  <div class="tab-content active" id="tab-home">
+    <div class="home-hero">
+      <div class="home-eyebrow">Block Brand Creative</div>
+      <h1 class="home-headline">Hub <span class="slash">//</span><br>Tailored Toward<br>Brand Creative</h1>
+      <p class="home-sub">Your central resource for brand assets, AI-powered workflows, tools, and team learning. Everything in one place.</p>
+    </div>
+    <div class="home-sections">
+      <div class="home-section-tile" onclick="showTab('dam')">
+        <div class="tile-icon"><i class="fa-solid fa-layer-group"></i></div>
+        <div class="tile-name">DAM</div>
+        <div class="tile-count" id="tile-dam-count">12</div>
+        <div class="tile-desc">Photography, illustration, UI, 3D renders, and graphic assets.</div>
+        <div class="tile-arrow">Browse assets →</div>
+      </div>
+      <div class="home-section-tile" onclick="showTab('workflows')">
+        <div class="tile-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+        <div class="tile-name">Workflows</div>
+        <div class="tile-count" id="tile-wf-count">10</div>
+        <div class="tile-desc">Step-by-step AI-powered creative workflows for the team.</div>
+        <div class="tile-arrow">View workflows →</div>
+      </div>
+      <div class="home-section-tile" onclick="showTab('resources')">
+        <div class="tile-icon"><i class="fa-solid fa-bookmark"></i></div>
+        <div class="tile-name">Resources</div>
+        <div class="tile-count" id="tile-res-count">8</div>
+        <div class="tile-desc">Tools, guidelines, templates, and legal references.</div>
+        <div class="tile-arrow">Open resources →</div>
+      </div>
+      <div class="home-section-tile" onclick="showTab('education')">
+        <div class="tile-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+        <div class="tile-name">Education</div>
+        <div class="tile-count" id="tile-edu-count">6</div>
+        <div class="tile-desc">Upcoming sessions, workshops, and recorded learnings.</div>
+        <div class="tile-arrow">See schedule →</div>
+      </div>
+    </div>
+    <div class="home-upcoming">
+      <div class="upcoming-header">
+        <div class="upcoming-title">Up Next</div>
+        <div class="upcoming-subtitle">Upcoming education sessions</div>
+      </div>
+      <div class="upcoming-strip" id="home-upcoming-strip">
+        <!-- filled by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- DAM TAB -->
+  <div class="tab-content" id="tab-dam">
+    <div class="toolbar">
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Search assets..." id="dam-search" oninput="renderDAM()">
+      </div>
+      <div class="chips" id="dam-chips">
+        <button class="chip active" onclick="setChip('dam','All',this)">All</button>
+        <button class="chip" onclick="setChip('dam','Photography',this)">Photography</button>
+        <button class="chip" onclick="setChip('dam','Illustration',this)">Illustration</button>
+        <button class="chip" onclick="setChip('dam','3D',this)">3D</button>
+        <button class="chip" onclick="setChip('dam','Graphic',this)">Graphic</button>
+        <button class="chip" onclick="setChip('dam','UI',this)">UI</button>
+      </div>
+      <select class="sort-select" id="dam-sort" onchange="renderDAM()">
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="alpha">A → Z</option>
+      </select>
+    </div>
+    <div class="scroll-area">
+      <div class="dam-grid-wrap">
+        <div class="dam-grid" id="dam-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORKFLOWS TAB -->
+  <div class="tab-content" id="tab-workflows">
+    <div class="toolbar">
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Search workflows..." id="wf-search" oninput="renderWorkflows()">
+      </div>
+      <div class="chips" id="wf-chips">
+        <button class="chip active" onclick="setChip('wf','All',this)">All</button>
+        <button class="chip" onclick="setChip('wf','Beginner',this)">Beginner</button>
+        <button class="chip" onclick="setChip('wf','Intermediate',this)">Intermediate</button>
+        <button class="chip" onclick="setChip('wf','Advanced',this)">Advanced</button>
+      </div>
+    </div>
+    <div class="scroll-area" style="padding:0">
+      <div id="wf-list"></div>
+    </div>
+  </div>
+
+  <!-- RESOURCES TAB -->
+  <div class="tab-content" id="tab-resources">
+    <div class="toolbar">
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Search resources..." id="res-search" oninput="renderResources()">
+      </div>
+      <div class="chips" id="res-chips">
+        <button class="chip active" onclick="setChip('res','All',this)">All</button>
+        <button class="chip" onclick="setChip('res','Copy',this)">Copy</button>
+        <button class="chip" onclick="setChip('res','Tools',this)">Tools</button>
+        <button class="chip" onclick="setChip('res','Legal',this)">Legal</button>
+        <button class="chip" onclick="setChip('res','Decks',this)">Decks</button>
+      </div>
+    </div>
+    <div class="scroll-area">
+      <div class="res-grid" id="res-grid"></div>
+    </div>
+  </div>
+
+  <!-- EDUCATION TAB -->
+  <div class="tab-content" id="tab-education">
+    <div class="toolbar">
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Search sessions..." id="edu-search" oninput="renderEducation()">
+      </div>
+      <div class="chips" id="edu-chips">
+        <button class="chip active" onclick="setChip('edu','All',this)">All</button>
+        <button class="chip" onclick="setChip('edu','upcoming',this)">Upcoming</button>
+        <button class="chip" onclick="setChip('edu','past',this)">Past</button>
+      </div>
+    </div>
+    <div class="scroll-area">
+      <div id="edu-sections"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ASSET MODAL -->
+<div class="modal-overlay" id="asset-modal" onclick="closeModal('asset-modal',event)">
+  <div class="modal">
+    <img class="modal-thumb" id="modal-thumb" src="" alt="">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title"></div>
+      <button class="modal-close" onclick="closeModalDirect('asset-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-meta" id="modal-meta"></div>
+      <p class="modal-desc" id="modal-desc"></p>
+      <div class="modal-links" id="modal-links"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+
+const ASSETS = [
+  {id:"asset-01",title:"Campaign Hero Photography",category:"Photography",thumbnail:"https://picsum.photos/seed/asset1/800/600",fileLinks:[{label:"Figma Source",url:"#"},{label:"Drive Folder",url:"#"}],description:"High-resolution hero photography for seasonal campaign. Includes raw files and edited masters. Suitable for web, print, and OOH applications.",tags:["campaign","hero","editorial","outdoor"],createdAt:"2024-11-15",owner:"Maya Torres"},
+  {id:"asset-02",title:"Brand Illustration Set",category:"Illustration",thumbnail:"https://picsum.photos/seed/asset2/800/600",fileLinks:[{label:"Figma File",url:"#"},{label:"SVG Export",url:"#"}],description:"A cohesive set of 24 brand illustrations covering product features, lifestyle, and abstract brand concepts. Flat-style with brand color palette.",tags:["illustration","flat","brand","icons"],createdAt:"2024-10-22",owner:"Alex Chen"},
+  {id:"asset-03",title:"3D Logo Mark",category:"3D",thumbnail:"https://picsum.photos/seed/asset3/800/600",fileLinks:[{label:"Blender File",url:"#"},{label:"Renders Pack",url:"#"}],description:"Three-dimensional interpretation of the primary logo mark. Includes multiple lighting setups, turntable renders, and PNG exports on transparent backgrounds.",tags:["3D","logo","render","blender"],createdAt:"2024-09-30",owner:"Jordan Park"},
+  {id:"asset-04",title:"Social Template Pack",category:"Graphic",thumbnail:"https://picsum.photos/seed/asset4/800/600",fileLinks:[{label:"Figma Templates",url:"#"},{label:"Exported PNGs",url:"#"}],description:"Complete social media template system for Instagram, X, and LinkedIn. Includes story, post, and carousel formats. Fully editable in Figma.",tags:["social","templates","instagram","linkedin","figma"],createdAt:"2024-12-01",owner:"Priya Nair"},
+  {id:"asset-05",title:"Mobile UI Kit",category:"UI",thumbnail:"https://picsum.photos/seed/asset5/800/600",fileLinks:[{label:"Figma UI Kit",url:"#"}],description:"Comprehensive mobile UI kit with 80+ components, 12 screen templates, and a complete design token system. Built for iOS and Android parity.",tags:["UI","mobile","components","design system","figma"],createdAt:"2024-08-18",owner:"Alex Chen"},
+  {id:"asset-06",title:"Lifestyle Photography",category:"Photography",thumbnail:"https://picsum.photos/seed/asset6/800/600",fileLinks:[{label:"Drive Folder",url:"#"}],description:"Curated lifestyle photography library featuring authentic, candid moments. Shot across multiple cities. RAW and edited versions included.",tags:["lifestyle","photography","candid","people"],createdAt:"2024-07-04",owner:"Maya Torres"},
+  {id:"asset-07",title:"Icon Library",category:"Graphic",thumbnail:"https://picsum.photos/seed/asset7/800/600",fileLinks:[{label:"Figma Library",url:"#"},{label:"SVG Sprite",url:"#"}],description:"Master icon library with 200+ icons in stroke and filled variants. Two weights: regular and bold. Available in 16, 24, and 32px grid.",tags:["icons","graphic","SVG","library"],createdAt:"2024-06-12",owner:"Jordan Park"},
+  {id:"asset-08",title:"Environmental Renders",category:"3D",thumbnail:"https://picsum.photos/seed/asset8/800/600",fileLinks:[{label:"Cinema4D Files",url:"#"},{label:"Final Renders",url:"#"}],description:"Photorealistic environmental renders for campaign use. Six unique scenes: urban, office, retail, outdoor plaza, home, and studio. 8K resolution.",tags:["3D","environment","render","architectural"],createdAt:"2024-05-20",owner:"Sam Wilder"},
+  {id:"asset-09",title:"Print Collateral Pack",category:"Graphic",thumbnail:"https://picsum.photos/seed/asset9/800/600",fileLinks:[{label:"InDesign Files",url:"#"},{label:"Print-Ready PDFs",url:"#"}],description:"Full print collateral system including business cards, letterhead, envelopes, brochures, and event signage. Print-ready with bleeds and crop marks.",tags:["print","collateral","brochure","business card"],createdAt:"2024-04-08",owner:"Priya Nair"},
+  {id:"asset-10",title:"Web Component Library",category:"UI",thumbnail:"https://picsum.photos/seed/asset10/800/600",fileLinks:[{label:"Figma Components",url:"#"},{label:"Storybook Docs",url:"#"}],description:"Web component library aligned with our design system. Includes navigation, forms, cards, modals, and data display patterns. Annotated for dev handoff.",tags:["UI","web","components","storybook","design system"],createdAt:"2024-03-25",owner:"Alex Chen"},
+  {id:"asset-11",title:"Portrait Series",category:"Photography",thumbnail:"https://picsum.photos/seed/asset11/800/600",fileLinks:[{label:"Drive Folder",url:"#"}],description:"Professional portrait series featuring team members and brand ambassadors. Consistent studio lighting setup. Retouched and approved for external use.",tags:["portrait","photography","people","studio"],createdAt:"2024-02-14",owner:"Maya Torres"},
+  {id:"asset-12",title:"Motion Graphics Stills",category:"Illustration",thumbnail:"https://picsum.photos/seed/asset12/800/600",fileLinks:[{label:"After Effects Project",url:"#"},{label:"Still Exports",url:"#"}],description:"Key frame stills and exported frames from motion graphics campaigns. Includes title cards, lower thirds, and transition graphics as static assets.",tags:["motion","animation","stills","after effects"],createdAt:"2024-01-30",owner:"Sam Wilder"}
+];
+
+const WORKFLOWS = [
+  {id:"wf-01",title:"AI Mockup Maker",summary:"Generate photorealistic product mockups using AI image generation tools paired with brand assets. Covers prompt engineering, asset prep, and quality control.",thumbnail:"https://picsum.photos/seed/wf1/800/450",projectFileLink:"#",walkthroughLink:"#",steps:["Export the base product asset from the DAM at 2x resolution with transparent background","Write a detailed scene prompt including lighting direction, surface texture, and environment context","Run generation in the AI tool with seed locking enabled to maintain consistency across variants","Apply the product asset as a smart object overlay in Photoshop and match perspective","Run the brand color grading LUT and check contrast against accessibility thresholds","Export final mockup set in web and print resolutions and upload to DAM"],tags:["mockup maker","AI","photoshop","product"],difficulty:"Intermediate",estimatedTime:"45 min",createdAt:"2024-12-10",author:"Alex Chen"},
+  {id:"wf-02",title:"People Photography Retouching",summary:"End-to-end retouching pipeline for people photography. From raw import through skin retouching, color grading, and final delivery. Emphasizes natural, editorial results.",thumbnail:"https://picsum.photos/seed/wf2/800/450",projectFileLink:"#",walkthroughLink:"#",steps:["Import RAW files into Lightroom and apply the brand base preset for skin tone foundation","Select hero frames using star ratings — target 3-5 selects per scene","Perform frequency separation for skin retouching, preserving natural texture","Apply dodge and burn to sculpt lighting and enhance dimension","Run the brand color grade: lift shadows to warm tone, desaturate greens, enhance skin hue","Export at print resolution (300dpi) and web resolution (72dpi, sRGB)"],tags:["people","photography","retouching","lightroom","color"],difficulty:"Advanced",estimatedTime:"90 min",createdAt:"2024-11-28",author:"Maya Torres"},
+  {id:"wf-03",title:"Brand Card Workflow",summary:"Design and produce on-brand digital and print cards using the card system template. Covers layout, copy review, and prepress preparation.",thumbnail:"https://picsum.photos/seed/wf3/800/450",projectFileLink:"#",walkthroughLink:"#",steps:["Open the Brand Card master Figma file and duplicate the relevant card template","Swap in copy from the approved messaging document — do not paraphrase","Select imagery from the DAM Photography category that matches the card tone","Run the card through the internal copy review Slack channel and incorporate feedback","Export to PDF with embedded fonts and CMYK color profile for print","Upload final card to DAM under Graphic category and update the resource index"],tags:["card workflow","figma","print","copy"],difficulty:"Beginner",estimatedTime:"30 min",createdAt:"2024-11-05",author:"Priya Nair"},
+  {id:"wf-04",title:"UI Staging for Social",summary:"Take product UI screens and compose them into social-ready staged mockups. Uses device frames, custom backgrounds, and brand typography overlays.",thumbnail:"https://picsum.photos/seed/wf4/800/450",projectFileLink:"#",walkthroughLink:"#",steps:["Export product screens as PNG at 3x from Figma using the export panel","Open the Social Staging Figma template and select the appropriate device frame","Place screen exports into the smart object slots and adjust clipping","Select a background environment from the approved staging backgrounds library","Add headline copy using the brand typeface at the designated size","Export in all required social formats: 1:1, 4:5, 9:16, and 16:9"],tags:["UI","staging","social","figma","device frames"],difficulty:"Beginner",estimatedTime:"20 min",createdAt:"2024-10-18",author:"Alex Chen"},
+  {id:"wf-05",title:"Exterior Environment Compositing",summary:"Composite product or brand elements into exterior real-world environments. Covers masking, lighting matching, shadow synthesis, and color harmonization.",thumbnail:"https://picsum.photos/seed/wf5/800/450",projectFileLink:"#",walkthroughLink:"#",steps:["Source the background plate from the DAM environmental photography collection","Analyze light direction, color temperature, and shadow quality in the background","Mask the product element using AI-assisted selection and refine edges manually","Create a synthetic shadow layer using the background surface as reference","Match the product to the ambient color temperature using a color balance adjustment","Add atmospheric perspective haze if the product is in the background or midground"],tags:["exterior","compositing","photoshop","environment"],difficulty:"Advanced",estimatedTime:"2 hours",createdAt:"2024-09-22",author:"Sam Wilder"},
+  {id:"wf-06",title:"Licensing Asset Check",summary:"Audit assets before campaign use to verify licensing status, expiry, and usage rights. Essential before any paid media or external publication.",thumbnail:"https://picsum.photos/seed/wf6/800/450",projectFileLink:"#",walkthroughLink:"#",steps:["Pull the asset list from the campaign brief and match each to its DAM entry","Check the DAM metadata field for license type and expiry date","Cross-reference with the Legal Asset Checklist in Resources for usage restrictions","Flag any assets with expired or unclear licensing in the campaign tracker","Submit flagged assets to the legal team via the licensing review form","Update the DAM entry with confirmed licensing status before campaign launch"],tags:["licensing","legal","compliance","DAM"],difficulty:"Beginner",estimatedTime:"30 min",createdAt:"2024-08-30",author:"Jordan Park"},
+  {id:"wf-07",title:"Campaign Concept Development",summary:"Structured ideation and concept development process from brief to approved campaign concept. Uses AI tools for moodboarding and early visual exploration.",thumbnail:"https://picsum.photos/seed/wf7/800/450",projectFileLink:"#",walkthroughLink:"#",steps:["Read the campaign brief in full and highlight the core emotional and functional objectives","Build a moodboard in Figma using DAM assets and external reference pulls","Use the AI Copy Bot to generate 10 headline directions from the brief","Pair the top 3 copy directions with visual references in a concept deck","Present concepts in a team review and collect structured feedback","Develop the approved concept into an execution-ready brief"],tags:["copy","concept","campaign","AI","ideation"],difficulty:"Intermediate",estimatedTime:"Half day",createdAt:"2024-07-15",author:"Maya Torres"},
+  {id:"wf-08",title:"Motion Loop Creation",summary:"Create seamless motion loops from static brand assets for use in digital OOH, web backgrounds, and social content.",thumbnail:"https://picsum.photos/seed/wf8/800/450",projectFileLink:"#",walkthroughLink:"#",steps:["Select the static asset and define the motion concept: drift, pulse, morph, or parallax","Import the asset into After Effects and set up a 3-6 second composition","Apply motion using position keyframes and ease curves for natural movement","Ensure the first and last frames match precisely to enable seamless looping","Export as a ProRes 4444 master and encode to H.264 and WebM for delivery","Upload to DAM under the original asset ID with a -loop suffix"],tags:["motion","animation","after effects","loop"],difficulty:"Intermediate",estimatedTime:"1 hour",createdAt:"2024-06-28",author:"Sam Wilder"},
+  {id:"wf-09",title:"Color Grading Pipeline",summary:"Standardized color grading pipeline for maintaining brand visual consistency across all photography and video assets. Includes LUT creation and application.",thumbnail:"https://picsum.photos/seed/wf9/800/450",projectFileLink:"#",walkthroughLink:"#",steps:["Normalize the exposure and white balance of source imagery before grading","Apply the brand base LUT as the first adjustment layer in your grading software","Make scene-specific corrections for highlights, shadows, and midtone contrast","Check skin tones against the brand approved skin tone reference swatches","Export a grade still for approval before processing the full batch","Process the full batch and apply the approved grade; export at master quality"],tags:["color","grading","LUT","photography","pipeline"],difficulty:"Intermediate",estimatedTime:"Varies by batch size",createdAt:"2024-05-10",author:"Alex Chen"},
+  {id:"wf-10",title:"AI Copy + Visual Pairing",summary:"Use the Copy Bot and AI image tools together to rapidly prototype copy-visual pairings for campaign ads. Accelerates the concepting phase from days to hours.",thumbnail:"https://picsum.photos/seed/wf10/800/450",projectFileLink:"#",walkthroughLink:"#",steps:["Feed the campaign brief into Copy Bot with the target audience and emotional tone defined","Generate 20 headline variants and select the top 5 by instinct for gut-check review","For each selected headline, write a visual direction prompt in plain English","Run visual generation for each direction and collect 3 outputs per prompt","Assemble pairs in a Figma rapid prototype deck for stakeholder review","Document the approved pairings and hand off to production for final execution"],tags:["copy","AI","mockup maker","concepting","workflow"],difficulty:"Intermediate",estimatedTime:"2 hours",createdAt:"2024-04-02",author:"Priya Nair"}
+];
+
+const RESOURCES = [
+  {id:"res-01",name:"Copy Bot",description:"AI-powered copywriting assistant trained on brand voice guidelines. Generate headlines, body copy, taglines, and social captions in seconds. Supports brief-to-copy and copy-to-brief modes.",link:"#",tags:["AI","copy","writing","automation"],category:"Copy"},
+  {id:"res-02",name:"Curated Goose Skills // G2",description:"A curated library of Goose AI skills optimized for brand creative work. Includes skills for image analysis, copy review, asset tagging, and campaign brief generation.",link:"#",tags:["AI","Goose","skills","automation"],category:"Tools"},
+  {id:"res-03",name:"Legal Asset Checklist",description:"Comprehensive checklist for verifying asset licensing, model releases, property releases, and usage rights before any campaign or external publication. Required review before paid media.",link:"#",tags:["legal","licensing","compliance","checklist"],category:"Legal"},
+  {id:"res-04",name:"Vanta Deck Maker",description:"Automated deck generation tool that builds presentation decks from templates and brand assets. Connect to the DAM and populate slides with approved imagery and copy in minutes.",link:"#",tags:["decks","presentations","automation","templates"],category:"Decks"},
+  {id:"res-05",name:"Brand Voice Guide",description:"The definitive guide to writing in the brand voice. Covers tone, vocabulary, punctuation preferences, writing for different channels, and common mistakes to avoid.",link:"#",tags:["brand","voice","copy","guidelines"],category:"Copy"},
+  {id:"res-06",name:"AI Tool Directory",description:"Curated directory of approved AI tools for creative use. Each entry includes a description, use case, access instructions, and any licensing or data-handling restrictions.",link:"#",tags:["AI","tools","directory","approved"],category:"Tools"},
+  {id:"res-07",name:"Licensing FAQ",description:"Frequently asked questions about asset licensing, stock photography usage, music rights, and third-party content. Maintained by the legal team and updated quarterly.",link:"#",tags:["legal","licensing","FAQ","stock"],category:"Legal"},
+  {id:"res-08",name:"Campaign Brief Template",description:"Standard campaign brief template used across all brand campaigns. Includes fields for objectives, audience, messaging hierarchy, channels, success metrics, and timeline.",link:"#",tags:["campaign","brief","template","planning"],category:"Decks"}
+];
+
+const EDUCATION = [
+  {id:"edu-01",title:"Mockup Workflow Deep Dive",date:"2026-03-18",time:"2:00 PM PT",format:"Hands-on",description:"A practical hands-on session working through the complete AI mockup workflow from start to finish. Attendees will leave with a finished mockup and a reusable prompt library.",presenters:["Alex Chen"],status:"upcoming",tags:["mockup maker","AI","hands-on","photoshop"]},
+  {id:"edu-02",title:"AI Prompt Engineering for Brand",date:"2026-03-25",time:"11:00 AM PT",format:"Workshop",description:"Deep-dive workshop on writing effective prompts for brand creative use cases. Covers image generation, copy generation, and multi-step workflows. Includes live experimentation.",presenters:["Maya Torres","Priya Nair"],status:"upcoming",tags:["AI","prompt engineering","copy","workshop"]},
+  {id:"edu-03",title:"Photography Direction + AI Compositing",date:"2026-04-08",time:"1:00 PM PT",format:"Show & Tell",description:"Show & tell exploring the intersection of art direction for photography and AI compositing techniques. Featuring recent campaign examples and a live demo of the compositing pipeline.",presenters:["Sam Wilder"],status:"upcoming",tags:["photography","compositing","AI","direction"]},
+  {id:"edu-04",title:"Intro to Goose Skills",date:"2026-01-14",time:"3:00 PM PT",format:"Hands-on",description:"An introduction to the Goose AI framework and the curated skills library for brand creative teams. Covered skill setup, basic customization, and practical use cases demonstrated live.",presenters:["Jordan Park"],notesLink:"#",recordingLink:"#",status:"past",tags:["Goose","AI","skills","automation"]},
+  {id:"edu-05",title:"Color Grading for Brand Consistency",date:"2026-02-04",time:"2:00 PM PT",format:"Workshop",description:"Practical workshop on maintaining visual consistency through color grading. Covered LUT creation, application in Lightroom and Premiere, and building a brand grade reference kit.",presenters:["Alex Chen","Maya Torres"],notesLink:"#",recordingLink:"#",status:"past",tags:["color","grading","LUT","consistency","photography"]},
+  {id:"edu-06",title:"Card Workflow Fundamentals",date:"2026-02-25",time:"11:00 AM PT",format:"Show & Tell",description:"An overview of the brand card system and workflow. Covered template usage, copy guidelines, asset selection from the DAM, and the prepress export process for print and digital.",presenters:["Priya Nair"],notesLink:"#",recordingLink:"#",status:"past",tags:["card workflow","figma","print","templates"]}
+];
+
+// ─── STATE ──────────────────────────────────────────────────────────────────
+
+const state = {
+  dam: { filter: 'All', sort: 'newest' },
+  wf:  { filter: 'All' },
+  res: { filter: 'All' },
+  edu: { filter: 'All' },
+  expandedWf: null
+};
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Date
+  const d = new Date();
+  document.getElementById('header-date').textContent =
+    d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+
+  // Home upcoming strip
+  const strip = document.getElementById('home-upcoming-strip');
+  const upcoming = EDUCATION.filter(e => e.status === 'upcoming');
+  strip.innerHTML = upcoming.length ? upcoming.map(e => {
+    const dt = new Date(e.date + 'T00:00:00');
+    const mon = dt.toLocaleDateString('en-US',{month:'short'}).toUpperCase();
+    const day = dt.getDate();
+    return `<div class="upcoming-card" onclick="showTab('education')">
+      <div class="upcoming-format">${e.format}</div>
+      <div class="upcoming-session-title">${e.title}</div>
+      <div class="upcoming-date">${mon} ${day} · ${e.time}</div>
+      <div class="upcoming-presenters">${e.presenters.join(', ')}</div>
+    </div>`;
+  }).join('') : '<p style="font-size:13px;color:var(--text3)">No upcoming sessions scheduled.</p>';
+
+  renderDAM();
+  renderWorkflows();
+  renderResources();
+  renderEducation();
+});
+
+// ─── TAB NAVIGATION ──────────────────────────────────────────────────────────
+
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  document.getElementById('btn-' + id).classList.add('active');
+}
+
+// ─── CHIP FILTER ─────────────────────────────────────────────────────────────
+
+function setChip(section, value, el) {
+  const container = document.getElementById(section + '-chips');
+  container.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  state[section].filter = value;
+  if (section === 'dam') renderDAM();
+  else if (section === 'wf') renderWorkflows();
+  else if (section === 'res') renderResources();
+  else if (section === 'edu') renderEducation();
+}
+
+// ─── DAM ─────────────────────────────────────────────────────────────────────
+
+function renderDAM() {
+  const q = document.getElementById('dam-search').value.toLowerCase();
+  const f = state.dam.filter;
+  const s = document.getElementById('dam-sort').value;
+  let items = ASSETS.filter(a => {
+    if (f !== 'All' && a.category !== f) return false;
+    if (q) {
+      const hay = (a.title + a.category + a.tags.join(' ') + a.owner).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  if (s === 'newest') items.sort((a,b) => b.createdAt.localeCompare(a.createdAt));
+  else if (s === 'oldest') items.sort((a,b) => a.createdAt.localeCompare(b.createdAt));
+  else items.sort((a,b) => a.title.localeCompare(b.title));
+
+  const grid = document.getElementById('dam-grid');
+  if (!items.length) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-image"></i><p>No assets found</p></div>';
+    return;
+  }
+  grid.innerHTML = items.map(a => `
+    <div class="asset-card" onclick="openAsset('${a.id}')">
+      <img class="asset-thumb" src="${a.thumbnail}" alt="${a.title}" loading="lazy"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="asset-thumb-placeholder" style="display:none"><i class="fa-regular fa-image"></i></div>
+      <div class="asset-body">
+        <div class="asset-category">${a.category}</div>
+        <div class="asset-title">${a.title}</div>
+        <div class="asset-meta">${a.owner} · ${fmtDate(a.createdAt)}</div>
+        <div class="asset-tags">${a.tags.slice(0,3).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      </div>
+      <div class="asset-footer">
+        ${a.fileLinks.map(l=>`<a class="asset-link" href="${l.url}" onclick="event.stopPropagation()">${l.label}</a>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function openAsset(id) {
+  const a = ASSETS.find(x => x.id === id);
+  if (!a) return;
+  document.getElementById('modal-thumb').src = a.thumbnail;
+  document.getElementById('modal-title').textContent = a.title;
+  document.getElementById('modal-meta').innerHTML = `
+    <div class="modal-meta-item"><span class="meta-label">Category</span><span class="meta-value">${a.category}</span></div>
+    <div class="modal-meta-item"><span class="meta-label">Owner</span><span class="meta-value">${a.owner}</span></div>
+    <div class="modal-meta-item"><span class="meta-label">Created</span><span class="meta-value">${fmtDate(a.createdAt)}</span></div>
+  `;
+  document.getElementById('modal-desc').textContent = a.description;
+  document.getElementById('modal-links').innerHTML = a.fileLinks.map(l =>
+    `<a class="res-link" href="${l.url}"><i class="fa-solid fa-arrow-up-right-from-square"></i>${l.label}</a>`
+  ).join('');
+  document.getElementById('asset-modal').classList.add('open');
+}
+
+// ─── WORKFLOWS ───────────────────────────────────────────────────────────────
+
+function renderWorkflows() {
+  const q = document.getElementById('wf-search').value.toLowerCase();
+  const f = state.wf.filter;
+  let items = WORKFLOWS.filter(w => {
+    if (f !== 'All' && w.difficulty !== f) return false;
+    if (q) {
+      const hay = (w.title + w.summary + w.tags.join(' ') + w.author).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  const list = document.getElementById('wf-list');
+  if (!items.length) {
+    list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-wand-magic-sparkles"></i><p>No workflows found</p></div>';
+    return;
+  }
+  list.innerHTML = items.map(w => `
+    <div style="border-bottom:1px solid var(--border-light)">
+      <div class="wf-card" id="wf-card-${w.id}" onclick="toggleWF('${w.id}')">
+        <div class="wf-thumb-wrap">
+          <img class="wf-thumb" src="${w.thumbnail}" alt="${w.title}" loading="lazy"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="wf-thumb-placeholder" style="display:none"><i class="fa-solid fa-film"></i></div>
+        </div>
+        <div class="wf-body">
+          <div class="wf-top">
+            <div class="wf-title">${w.title}</div>
+            <div class="wf-badges">
+              <span class="wf-diff diff-${w.difficulty.toLowerCase()}">${w.difficulty}</span>
+            </div>
+          </div>
+          <div class="wf-summary">${w.summary}</div>
+          <div class="wf-tags">${w.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+          <div class="wf-footer">
+            <div class="wf-author"><i class="fa-regular fa-clock" style="margin-right:4px"></i>${w.estimatedTime} · by ${w.author}</div>
+            <div class="wf-links" onclick="event.stopPropagation()">
+              <a class="wf-link" href="${w.projectFileLink}"><i class="fa-solid fa-folder-open"></i> Files</a>
+              <a class="wf-link" href="${w.walkthroughLink}"><i class="fa-solid fa-play"></i> Walkthrough</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="wf-expand" id="wf-expand-${w.id}">
+        <div class="wf-steps-label">Steps</div>
+        <div class="wf-steps">
+          ${w.steps.map((s,i)=>`
+            <div class="wf-step">
+              <div class="step-num">${i+1}</div>
+              <div class="step-text">${s}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleWF(id) {
+  const exp = document.getElementById('wf-expand-' + id);
+  if (!exp) return;
+  const isOpen = exp.classList.contains('open');
+  // close all
+  document.querySelectorAll('.wf-expand').forEach(e => e.classList.remove('open'));
+  if (!isOpen) exp.classList.add('open');
+}
+
+// ─── RESOURCES ───────────────────────────────────────────────────────────────
+
+function renderResources() {
+  const q = document.getElementById('res-search').value.toLowerCase();
+  const f = state.res.filter;
+  let items = RESOURCES.filter(r => {
+    if (f !== 'All' && r.category !== f) return false;
+    if (q) {
+      const hay = (r.name + r.description + r.tags.join(' ') + r.category).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  const grid = document.getElementById('res-grid');
+  if (!items.length) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fa-solid fa-bookmark"></i><p>No resources found</p></div>';
+    return;
+  }
+  grid.innerHTML = items.map(r => `
+    <div class="res-card">
+      <div class="res-category">${r.category}</div>
+      <div class="res-name">${r.name}</div>
+      <div class="res-desc">${r.description}</div>
+      <div class="res-tags">${r.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      <a class="res-link" href="${r.link}"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open</a>
+    </div>
+  `).join('');
+}
+
+// ─── EDUCATION ───────────────────────────────────────────────────────────────
+
+function renderEducation() {
+  const q = document.getElementById('edu-search').value.toLowerCase();
+  const f = state.edu.filter;
+  let items = EDUCATION.filter(e => {
+    if (f !== 'All' && e.status !== f) return false;
+    if (q) {
+      const hay = (e.title + e.description + e.tags.join(' ') + e.presenters.join(' ')).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  const upcoming = items.filter(e => e.status === 'upcoming')
+    .sort((a,b) => a.date.localeCompare(b.date));
+  const past = items.filter(e => e.status === 'past')
+    .sort((a,b) => b.date.localeCompare(a.date));
+
+  const sec = document.getElementById('edu-sections');
+  let html = '';
+
+  if (upcoming.length || (f === 'All' || f === 'upcoming')) {
+    html += `<div style="margin-bottom:32px">`;
+    if (upcoming.length) {
+      html += `<div class="edu-group-label">Upcoming Sessions</div>`;
+      html += `<div class="edu-list">${upcoming.map(eduCard).join('')}</div>`;
+    } else if (f === 'upcoming') {
+      html += `<div class="empty-state"><i class="fa-regular fa-calendar"></i><p>No upcoming sessions</p></div>`;
+    }
+    html += `</div>`;
+  }
+
+  if (past.length || (f === 'All' || f === 'past')) {
+    html += `<div style="margin-bottom:32px">`;
+    if (past.length) {
+      html += `<div class="edu-group-label">Past Sessions</div>`;
+      html += `<div class="edu-list">${past.map(eduCard).join('')}</div>`;
+    } else if (f === 'past') {
+      html += `<div class="empty-state"><i class="fa-regular fa-clock"></i><p>No past sessions found</p></div>`;
+    }
+    html += `</div>`;
+  }
+
+  if (!upcoming.length && !past.length) {
+    html = '<div class="empty-state"><i class="fa-solid fa-graduation-cap"></i><p>No sessions found</p></div>';
+  }
+
+  sec.innerHTML = html;
+}
+
+function eduCard(e) {
+  const dt = new Date(e.date + 'T00:00:00');
+  const mon = dt.toLocaleDateString('en-US',{month:'short'}).toUpperCase();
+  const day = dt.getDate();
+  const actions = e.status === 'upcoming'
+    ? `<button class="edu-action primary"><i class="fa-regular fa-calendar-plus"></i> Add to Calendar</button>`
+    : `${e.notesLink ? `<a class="edu-action" href="${e.notesLink}"><i class="fa-solid fa-file-lines"></i> Notes</a>` : ''}
+       ${e.recordingLink ? `<a class="edu-action" href="${e.recordingLink}"><i class="fa-solid fa-circle-play"></i> Recording</a>` : ''}`;
+  return `
+    <div class="edu-card">
+      <div class="edu-date-block">
+        <div class="edu-month">${mon}</div>
+        <div class="edu-day">${day}</div>
+        <div class="edu-time">${e.time}</div>
+      </div>
+      <div class="edu-body">
+        <div class="edu-header-row">
+          <div class="edu-title">${e.title}</div>
+          <span class="edu-format">${e.format}</span>
+        </div>
+        <div class="edu-desc">${e.description}</div>
+        <div class="edu-presenters"><i class="fa-regular fa-user" style="margin-right:4px"></i>${e.presenters.join(', ')}</div>
+        <div class="edu-tags">${e.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        <div class="edu-actions">${actions}</div>
+      </div>
+    </div>
+  `;
+}
+
+// ─── MODAL ───────────────────────────────────────────────────────────────────
+
+function closeModal(id, event) {
+  if (event.target === event.currentTarget) {
+    document.getElementById(id).classList.remove('open');
+  }
+}
+function closeModalDirect(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+
+function fmtDate(str) {
+  const d = new Date(str + 'T00:00:00');
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+</script>
+</body>
+</html>
