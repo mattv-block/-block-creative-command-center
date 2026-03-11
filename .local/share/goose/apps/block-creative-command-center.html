@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Block Creative — Command Center</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--bg2:#f8f9fa;--bg3:#f0f2f5;
+  --surface:#ffffff;--surface2:#f5f7fa;
+  --text:#0a0a0a;--text2:#555555;--text3:#999999;
+  --accent:#00D632;--accent2:#007a1e;--accent3:#005c14;
+  --border:#e8e8e8;--border2:#d0d0d0;
+  --hover:rgba(0,214,50,0.07);--glow:rgba(0,214,50,0.15);
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+/* HEADER */
+.app-header{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:56px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;gap:16px}
+.header-brand{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.header-brand .logo{width:32px;height:32px;border-radius:8px;background:#00D632;display:flex;align-items:center;justify-content:center;font-size:16px}
+.header-brand h1{font-size:15px;font-weight:700;letter-spacing:.3px;white-space:nowrap}
+.header-brand h1 .sub{font-weight:400;color:var(--text2);font-size:12px;margin-left:6px}
+.header-nav{display:flex;align-items:center;gap:2px;flex:1;justify-content:center}
+.nav-tab{padding:6px 16px;border-radius:6px;border:none;background:transparent;color:var(--text2);font-size:13px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.nav-tab:hover{background:var(--hover);color:var(--text)}
+.nav-tab.active{background:rgba(0,214,50,0.15);color:var(--accent2);font-weight:600}
+.nav-tab i{font-size:12px}
+.header-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.icon-btn{width:32px;height:32px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:13px}
+.icon-btn:hover{background:var(--accent);border-color:var(--accent);color:#000}
+.notif-dot{position:relative}.notif-dot::after{content:'';position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:#f87171;border:1.5px solid var(--bg2)}
+.avatar{width:32px;height:32px;border-radius:50%;background:#00D632;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;cursor:pointer;color:#000}
+/* LAYOUT */
+.app-main{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.tab-content{display:none;flex:1;overflow:hidden}
+.tab-content.active{display:flex}
+/* SHARED */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px}
+.section-title i{color:var(--accent2);font-size:12px}
+.section-action{font-size:12px;color:var(--accent2);cursor:pointer;display:flex;align-items:center;gap:4px}
+.section-action:hover{color:var(--accent3)}
+.filter-chip{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:11px;cursor:pointer;transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+.filter-chip:hover,.filter-chip.active{background:var(--accent);border-color:var(--accent);color:#000;font-weight:600}
+.progress-bar{height:3px;border-radius:2px;background:var(--border)}
+.progress-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .4s}
+.status-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:12px;font-size:10px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;flex-shrink:0}
+.pill-on-track{background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.2)}
+.pill-at-risk{background:rgba(245,158,11,0.15);color:#fbbf24;border:1px solid rgba(245,158,11,0.2)}
+.pill-delayed{background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.25)}
+.pill-done{background:rgba(16,185,129,0.07);color:#6ee7b7;border:1px solid rgba(16,185,129,0.12)}
+.pill-briefing{background:rgba(245,158,11,0.1);color:#fbbf24;border:1px solid rgba(245,158,11,0.18)}
+.pill-active{background:rgba(59,130,246,0.12);color:#60a5fa;border:1px solid rgba(59,130,246,0.2)}
+.pill-review{background:rgba(139,92,246,0.12);color:#a78bfa;border:1px solid rgba(139,92,246,0.2)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+/* DASHBOARD */
+#tab-dashboard{flex-direction:column;overflow-y:auto;padding:24px}
+.dash-top{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;margin-bottom:22px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;transition:border-color .2s;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.stat-card:hover{border-color:var(--border2)}
+.stat-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:8px}
+.stat-value{font-size:28px;font-weight:800;line-height:1}
+.stat-change{font-size:11px;margin-top:6px;display:flex;align-items:center;gap:4px}
+.stat-change.up{color:#10b981}.stat-change.warn{color:#f87171}.stat-change.neutral{color:var(--text2)}
+.dash-grid{display:grid;grid-template-columns:1fr 316px;gap:18px}
+@media(max-width:900px){.dash-grid{grid-template-columns:1fr}}
+.ws-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:10px}
+.ws-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:8px}
+.ws-card:hover{border-color:var(--border2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.ws-card-top{display:flex;align-items:center;gap:8px}
+.ws-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.ws-name{font-size:13px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ws-count{font-size:11px;color:var(--text2)}
+.ws-bar{height:3px;border-radius:2px;background:var(--border);margin-top:2px}
+.ws-bar-fill{height:100%;border-radius:2px;transition:width .4s}
+.activity-list{display:flex;flex-direction:column;gap:12px}
+.activity-item{display:flex;gap:10px;align-items:flex-start}
+.activity-dot{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;margin-top:1px}
+.activity-body{flex:1}
+.activity-title{font-size:13px;line-height:1.4}
+.activity-meta{font-size:11px;color:var(--text3);margin-top:2px}
+.deadline-item{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);margin-bottom:8px}
+.deadline-ws-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.deadline-body{flex:1;min-width:0}
+.deadline-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.deadline-project{font-size:11px;color:var(--text2);margin-top:2px;display:flex;align-items:center;gap:6px}
+.deadline-date{font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.deadline-date.urgent{background:rgba(239,68,68,0.15);color:#f87171}
+.deadline-date.soon{background:rgba(245,158,11,0.15);color:#fbbf24}
+.deadline-date.normal{background:rgba(16,185,129,0.15);color:#34d399}
+/* PROJECTS VERTICAL LIST */
+#tab-projects{flex-direction:column}
+.proj-toolbar{display:flex;align-items:center;gap:8px;padding:12px 20px;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap;flex-shrink:0}
+.proj-search{position:relative;flex:1;min-width:160px;max-width:240px}
+.proj-search input{width:100%;padding:7px 30px 7px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;outline:none;transition:border-color .2s}
+.proj-search input:focus{border-color:var(--accent)}
+.proj-search i{position:absolute;right:9px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:11px;pointer-events:none}
+.proj-list-body{flex:1;overflow-y:auto;padding:18px 22px;display:flex;flex-direction:column;gap:14px}
+.ws-group{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.ws-group-hdr{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;user-select:none;transition:background .15s}
+.ws-group-hdr:hover{background:var(--surface2)}
+.ws-group-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.ws-group-name{font-size:13px;font-weight:700;flex:1}
+.ws-group-badges{display:flex;align-items:center;gap:6px}
+.ws-badge{font-size:10px;padding:2px 7px;border-radius:10px}
+.wsb-count{background:rgba(0,0,0,0.04);color:var(--text2)}
+.wsb-alert{background:rgba(239,68,68,0.1);color:#f87171;display:flex;align-items:center;gap:3px}
+.wsb-risk{background:rgba(245,158,11,0.1);color:#fbbf24;display:flex;align-items:center;gap:3px}
+.ws-chevron{font-size:10px;color:var(--text3);transition:transform .25s;margin-left:2px}
+.ws-chevron.open{transform:rotate(90deg)}
+.ws-group-body{border-top:1px solid var(--border)}
+.proj-row{padding:12px 16px;border-bottom:1px solid rgba(0,0,0,.08);border-left:3px solid transparent;cursor:pointer;transition:background .15s,border-color .2s}
+.proj-row:last-child{border-bottom:none}
+.proj-row:hover{background:var(--hover)}
+.proj-row.row-delayed{border-left-color:#ef4444}
+.proj-row.row-at-risk{border-left-color:#f59e0b}
+.proj-row.row-on-track{border-left-color:rgba(16,185,129,.35)}
+.proj-row.row-done{opacity:.65}
+.proj-row-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.proj-alert-icon{color:#f87171;font-size:12px;animation:pulse 1.5s infinite;flex-shrink:0}
+.proj-name{font-size:13px;font-weight:600;flex:1;line-height:1.3}
+.proj-due{font-size:11px;display:flex;align-items:center;gap:3px;flex-shrink:0;font-weight:600}
+.proj-due.urgent{color:#f87171}.proj-due.soon{color:#fbbf24}.proj-due.normal{color:var(--text2)}
+.proj-row-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.proj-code{font-family:monospace;font-size:10px;color:var(--accent2);background:rgba(0,214,50,.08);padding:2px 6px;border-radius:3px}
+.proj-lead{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2)}
+.proj-lead-av{width:15px;height:15px;border-radius:50%;font-size:7px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.proj-tag-sm{font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(0,0,0,.04);color:var(--text3);border:1px solid var(--border)}
+.proj-prog-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.proj-prog-bar{flex:1;height:4px;border-radius:2px;background:var(--border)}
+.proj-prog-fill{height:100%;border-radius:2px;transition:width .4s}
+.proj-prog-pct{font-size:10px;font-weight:700;color:var(--text3);min-width:26px;text-align:right;flex-shrink:0}
+.proj-timeline{display:flex;align-items:flex-start;gap:8px}
+.tl-node{display:flex;align-items:flex-start;gap:5px;flex:1;min-width:0;position:relative}
+.tl-node:not(:last-child)::after{content:'→';position:absolute;right:-6px;top:1px;font-size:9px;color:var(--text3)}
+.tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:2px}
+.tl-body{min-width:0}
+.tl-label{font-size:10px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tl-date{font-size:10px;font-weight:700}
+.tl-date.urgent{color:#f87171}.tl-date.soon{color:#fbbf24}.tl-date.normal{color:#34d399}
+/* RESOURCES */
+#tab-resources{flex-direction:column}
+.res-header{display:flex;align-items:center;gap:8px;padding:12px 20px;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap;flex-shrink:0}
+.res-title{font-size:15px;font-weight:700;flex-shrink:0}
+.res-alerts-badge{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#f87171;font-size:11px;font-weight:600;flex-shrink:0}
+.res-divider{width:1px;height:20px;background:var(--border);flex-shrink:0}
+.sort-label{font-size:11px;color:var(--text2);white-space:nowrap;flex-shrink:0}
+.sort-btn{padding:5px 11px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:11px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0}
+.sort-btn:hover{border-color:var(--accent2);color:var(--accent3)}
+.sort-btn.active{background:rgba(0,214,50,.15);border-color:var(--accent);color:var(--accent2);font-weight:600}
+.res-cap-filter{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.res-body{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:0}
+.cap-section{margin-bottom:26px}
+.cap-section-hdr{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.cap-icon{width:30px;height:30px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--accent2);flex-shrink:0}
+.cap-name{font-size:14px;font-weight:700;flex:1}
+.cap-meta{display:flex;align-items:center;gap:6px}
+.cap-count{font-size:11px;color:var(--text2);background:var(--surface2);padding:2px 8px;border-radius:10px}
+.cap-alerts{font-size:11px;color:#f87171;background:rgba(239,68,68,.1);padding:2px 8px;border-radius:10px;display:flex;align-items:center;gap:4px}
+.cap-members-row{display:flex;flex-wrap:wrap;gap:12px}
+.member-card{width:196px;min-width:160px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all .2s;position:relative;flex-shrink:0}
+.member-card:hover{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 4px 16px var(--glow);transform:translateY(-1px)}
+.member-card.overloaded{border-color:rgba(239,68,68,.4)}
+.member-card.overloaded:hover{border-color:#f87171;box-shadow:0 0 0 1px #f87171,0 4px 12px rgba(239,68,68,.18)}
+.member-card.high-load{border-color:rgba(245,158,11,.3)}
+.overload-badge{position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;background:rgba(239,68,68,.15);display:flex;align-items:center;justify-content:center}
+.overload-badge i{font-size:9px;color:#f87171}
+.mc-avatar{width:36px;height:36px;border-radius:50%;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:9px}
+.mc-name{font-size:13px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mc-role{font-size:11px;color:var(--text2);margin-bottom:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mc-bar{height:5px;border-radius:3px;background:var(--border);margin-bottom:4px}
+.mc-bar-fill{height:100%;border-radius:3px;transition:width .4s}
+.mc-cap-row{display:flex;justify-content:space-between;align-items:center}
+.mc-pct{font-size:11px;font-weight:700}
+.mc-proj{font-size:10px;color:var(--text3)}
+.mc-flags{display:flex;gap:4px;margin-top:7px;flex-wrap:wrap}
+.flag-chip{font-size:9px;padding:2px 5px;border-radius:4px;font-weight:600;display:flex;align-items:center;gap:3px}
+.fc-d{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.18)}
+.fc-r{background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.18)}
+.fc-ok{background:rgba(16,185,129,.08);color:#34d399;border:1px solid rgba(16,185,129,.14)}
+/* MEMBER PANEL */
+.member-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90;opacity:0;pointer-events:none;transition:opacity .3s}
+.member-overlay.open{opacity:1;pointer-events:all}
+.member-panel{position:fixed;top:56px;right:0;bottom:0;width:374px;background:var(--bg2);border-left:1px solid var(--border);z-index:91;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.member-panel.open{transform:translateX(0)}
+.mp-header{padding:18px 20px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.mp-info{display:flex;align-items:center;gap:12px}
+.mp-avatar{width:42px;height:42px;border-radius:50%;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mp-name{font-size:15px;font-weight:700}
+.mp-role{font-size:11px;color:var(--text2);margin-top:2px}
+.mp-flag{display:inline-flex;align-items:center;gap:4px;margin-top:5px;font-size:10px;font-weight:600;padding:3px 8px;border-radius:10px}
+.mp-close{background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);font-size:13px;cursor:pointer;padding:5px 9px;transition:all .2s;flex-shrink:0}
+.mp-close:hover{background:var(--hover);color:var(--text)}
+.mp-cap{padding:14px 20px;border-bottom:1px solid var(--border);flex-shrink:0}
+.mp-cap-lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:5px;display:flex;justify-content:space-between}
+.mp-cap-bar{height:7px;border-radius:4px;background:var(--border);overflow:hidden}
+.mp-cap-fill{height:100%;border-radius:4px;transition:width .5s}
+.mp-cap-hrs{display:flex;justify-content:space-between;margin-top:4px;font-size:11px;color:var(--text2)}
+.mp-body{flex:1;overflow-y:auto;padding:16px 20px}
+.mp-sec-title{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.alloc-row{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:9px}
+.alloc-row.row-delayed{border-left:3px solid #ef4444}
+.alloc-row.row-at-risk{border-left:3px solid #f59e0b}
+.ar-top{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.ar-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ar-name{font-size:12px;font-weight:600;flex:1}
+.ar-meta{display:flex;align-items:center;gap:7px;margin-bottom:7px;flex-wrap:wrap}
+.ar-code{font-family:monospace;font-size:10px;color:var(--accent2)}
+.ar-due{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:3px}
+.ar-due.late{color:#f87171}
+.ar-adjust{display:flex;align-items:center;gap:6px;margin-top:6px}
+.ar-bar-wrap{flex:1}
+.ar-bar{height:4px;border-radius:2px;background:var(--border)}
+.ar-bar-fill{height:100%;border-radius:2px;transition:width .4s}
+.ar-controls{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.ar-btn{width:22px;height:22px;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;transition:all .2s;line-height:1}
+.ar-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.ar-hrs{font-size:12px;font-weight:700;min-width:30px;text-align:center}
+.mp-footer{padding:14px 20px;border-top:1px solid var(--border);flex-shrink:0}
+.mp-footer-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.mp-footer-lbl{font-size:12px;color:var(--text2)}
+.mp-footer-hrs{font-size:17px;font-weight:800}
+.mp-overload-warn{display:flex;align-items:center;gap:6px;padding:8px 12px;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.18);border-radius:7px;font-size:11px;color:#f87171}
+/* AI STUDIO */
+#tab-ai{flex-direction:column}
+.ai-layout{flex:1;display:flex;overflow:hidden}
+.ai-sidebar{width:212px;min-width:212px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.ai-sidebar-sec{padding:13px 11px;border-bottom:1px solid var(--border)}
+.ai-sidebar-sec h3{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:7px;padding:0 4px}
+.ai-cat{padding:7px 10px;border-radius:6px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px;color:var(--text2);transition:all .2s}
+.ai-cat:hover{background:var(--hover);color:var(--text)}
+.ai-cat.active{background:rgba(0,214,50,.15);color:var(--accent2)}
+.ai-cat i{font-size:12px;width:14px;text-align:center}
+.ai-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.ai-prompt-bar{padding:13px 20px;border-bottom:1px solid var(--border);background:var(--bg2);display:flex;gap:10px;align-items:center;flex-shrink:0}
+.ai-input-wrap{flex:1;position:relative}
+.ai-input{width:100%;padding:10px 44px 10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:14px;outline:none;transition:border-color .2s}
+.ai-input:focus{border-color:var(--accent)}
+.ai-send{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:5px;border:none;background:var(--accent);color:#000;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px}
+.ai-send:hover{background:var(--accent2)}
+.ai-content{flex:1;overflow-y:auto;padding:20px}
+.prompt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:24px}
+/* Prompt card */
+.prompt-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:border-color .2s,box-shadow .2s}
+.prompt-card:hover{border-color:var(--border2)}
+.prompt-card.expanded{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 6px 24px var(--glow)}
+/* Visual header */
+.prompt-visual{height:86px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-shrink:0}
+.prompt-visual-icon{font-size:34px;line-height:1;position:relative;z-index:1}
+.prompt-visual-cat{position:absolute;bottom:7px;left:10px;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;color:rgba(255,255,255,.45)}
+.prompt-visual-hint{position:absolute;bottom:7px;right:10px;font-size:9px;color:rgba(255,255,255,.35);display:flex;align-items:center;gap:3px}
+.prompt-card.expanded .prompt-visual-hint{display:none}
+/* Card body */
+.prompt-body{padding:11px 13px}
+.prompt-cat-lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;font-weight:600}
+.prompt-title{font-size:13px;font-weight:700;margin-bottom:5px;line-height:1.3}
+.prompt-preview{font-size:11px;color:var(--text2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.prompt-card.expanded .prompt-preview{display:none}
+.prompt-foot{display:flex;align-items:center;justify-content:space-between;margin-top:9px;padding-top:8px;border-top:1px solid var(--border)}
+.prompt-tags{display:flex;gap:4px;flex-wrap:wrap}
+.ptag{font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(0,0,0,.04);color:var(--text3);border:1px solid var(--border)}
+.prompt-use-btn{font-size:11px;padding:3px 9px;border-radius:5px;border:1px solid var(--accent);background:transparent;color:var(--accent2);cursor:pointer;transition:all .2s;white-space:nowrap}
+.prompt-use-btn:hover{background:var(--accent);color:#000}
+/* Expanded body */
+.prompt-expanded{padding:0 13px 13px;display:none}
+.prompt-card.expanded .prompt-expanded{display:block}
+.prompt-exp-lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+.prompt-copy-btn{font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all .2s}
+.prompt-copy-btn:hover{border-color:var(--accent);color:var(--accent2)}
+.prompt-full-text{font-size:11px;line-height:1.65;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:10px 12px;white-space:pre-wrap}
+.prompt-tips{margin-top:9px;padding:8px 10px;background:rgba(0,214,50,.06);border:1px solid rgba(0,214,50,.12);border-radius:6px;font-size:11px;color:var(--text2);line-height:1.5}
+.prompt-tips strong{color:var(--accent3);font-size:10px;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:3px}
+.prompt-collapse{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:9px;font-size:11px;color:var(--text3);cursor:pointer;padding:4px;border-radius:5px;transition:all .2s}
+.prompt-collapse:hover{color:var(--text2);background:var(--hover)}
+/* Inspo board */
+.inspo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:11px}
+.inspo-card{border-radius:10px;overflow:hidden;cursor:pointer;border:1px solid var(--border);transition:all .2s;background:var(--surface)}
+.inspo-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08)}
+.inspo-thumb{height:82px;display:flex;align-items:center;justify-content:center;font-size:28px}
+.inspo-body{padding:9px 11px}
+.inspo-title{font-size:12px;font-weight:600;margin-bottom:2px}
+.inspo-meta{font-size:10px;color:var(--text3)}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:100;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.active{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:14px;width:90%;max-width:530px;max-height:85vh;display:flex;flex-direction:column;transform:scale(.95);transition:transform .25s}
+.modal-overlay.active .modal{transform:scale(1)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border)}
+.modal-header h2{font-size:17px;font-weight:700}
+.modal-close{background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;padding:4px 8px;border-radius:4px}
+.modal-close:hover{background:var(--hover);color:var(--text)}
+.modal-body{overflow-y:auto;padding:22px}
+.modal-field{margin-bottom:15px}
+.modal-field label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:5px}
+.modal-field .val{font-size:14px;line-height:1.5}
+.modal-field .mono{font-family:monospace;font-size:13px;color:var(--accent2);background:rgba(0,214,50,.08);padding:4px 8px;border-radius:4px}
+.ms-list{display:flex;flex-direction:column;gap:7px;margin-top:3px}
+.ms-item{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg3);border-radius:6px;border:1px solid var(--border)}
+.ms-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ms-name{font-size:12px;flex:1}
+.ms-date{font-size:11px;font-weight:600}
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;background:#10b981;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;z-index:500;transform:translateY(60px);opacity:0;transition:all .3s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+@media(max-width:768px){.ai-sidebar,.res-divider{display:none}.member-panel{width:100%}.header-nav .nav-tab span{display:none}}
+/* PROJECT MILESTONES BULLET LIST */
+.proj-milestones{margin-top:6px;display:flex;flex-direction:column;gap:3px}
+.ms-bullet{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)}
+.ms-bullet-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ms-bullet-name{flex:1}
+.ms-bullet-date{font-size:10px;font-weight:700}
+/* PROJECT TEAM STRIP */
+.proj-team-strip{display:flex;align-items:center;gap:3px;margin-top:5px;flex-wrap:wrap}
+.pt-av{width:20px;height:20px;border-radius:50%;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1.5px solid var(--bg2)}
+.pt-more{font-size:10px;color:var(--text3);margin-left:2px;font-weight:600}
+/* PROJECTS SORT */
+.proj-sort-group{display:flex;align-items:center;gap:5px;margin-left:auto;flex-shrink:0}
+/* RESOURCES — INLINE PROJECT LIST ON CARD */
+.member-card{width:220px;min-width:180px}
+.mc-proj-list{margin-top:8px;border-top:1px solid var(--border);padding-top:7px;display:flex;flex-direction:column;gap:5px}
+.mc-proj-item{display:flex;align-items:center;gap:4px;padding:4px 6px;background:var(--bg3);border-radius:6px;border:1px solid var(--border)}
+.mc-pi-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.mc-pi-name{font-size:10px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text2)}
+.mc-pi-ctrl{display:flex;align-items:center;gap:2px;flex-shrink:0}
+.mc-pi-btn{width:16px;height:16px;border-radius:3px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;line-height:1;transition:all .15s}
+.mc-pi-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.mc-pi-hrs{font-size:10px;font-weight:700;min-width:22px;text-align:center;color:var(--text)}
+/* RESOURCES VIEW TOGGLE */
+.res-view-toggle{display:flex;gap:4px}
+.view-btn{padding:5px 11px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:11px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0}
+.view-btn:hover{border-color:var(--accent2);color:var(--accent3)}
+.view-btn.active{background:rgba(0,214,50,.15);border-color:var(--accent);color:var(--accent2);font-weight:600}
+/* GANTT */
+.gantt-wrap{flex:1;overflow:auto;padding:0}
+.gantt-sticky-hdr{position:sticky;top:0;z-index:10;background:var(--bg2);border-bottom:2px solid var(--border);display:flex}
+.gantt-hdr-spacer{width:186px;min-width:186px;flex-shrink:0;border-right:1px solid var(--border);position:sticky;left:0;z-index:11;background:var(--bg2)}
+.gantt-hdr-tracks{position:relative}
+.gantt-month-row{display:flex;height:20px;border-bottom:1px solid var(--border)}
+.gantt-month-cell{position:absolute;top:0;height:20px;display:flex;align-items:center;padding-left:6px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text2);border-left:1px solid var(--border2);overflow:hidden;white-space:nowrap}
+.gantt-week-row{position:relative;height:17px}
+.gantt-week-cell{position:absolute;top:0;height:100%;border-left:1px solid var(--border2)}
+.gantt-week-lbl{position:absolute;top:2px;left:3px;font-size:8px;font-weight:600;color:var(--text3);white-space:nowrap}
+.gantt-day-tick{position:absolute;top:10px;width:1px;height:7px;background:var(--border)}
+.gantt-member-row{display:flex;align-items:stretch;border-bottom:1px solid var(--border)}
+.gantt-label{width:186px;min-width:186px;flex-shrink:0;display:flex;align-items:center;gap:8px;padding:10px 10px 10px 14px;position:sticky;left:0;z-index:2;background:var(--bg2);border-right:1px solid var(--border)}
+.gantt-av{width:26px;height:26px;border-radius:50%;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.gantt-lname{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gantt-tracks{flex:1;position:relative;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:6px 0}
+.gantt-track-row{position:relative}
+.gantt-bar{position:absolute;top:2px;border-radius:3px;display:flex;align-items:center;padding:0 6px;gap:5px;font-size:9px;font-weight:600;white-space:nowrap;overflow:hidden;cursor:default;opacity:.88;min-width:4px}
+.gantt-bar:hover{opacity:1;z-index:5}
+.gantt-bar-hrs{font-size:8px;font-weight:700;background:rgba(0,0,0,.18);padding:1px 4px;border-radius:2px;flex-shrink:0;letter-spacing:.3px}
+.gantt-vline{position:absolute;top:0;bottom:0;width:1px;pointer-events:none}
+.gantt-today-line{position:absolute;top:0;bottom:0;width:2px;background:var(--accent);opacity:.8;pointer-events:none;z-index:4}
+.gantt-today-lbl{position:absolute;bottom:100%;font-size:8px;color:var(--accent2);font-weight:700;white-space:nowrap;transform:translateX(-50%);background:var(--bg2);padding:1px 3px;border-radius:2px}
+/* PROJECT CARD — date range */
+.pc-date-range{display:flex;align-items:center;gap:5px;padding:5px 10px;background:var(--bg3);border-radius:4px;border:1px solid var(--border);margin-bottom:0}
+.pc-date-start{font-size:9px;color:var(--text3);font-weight:600;display:flex;align-items:center;gap:3px;white-space:nowrap}
+.pc-date-arrow{font-size:9px;color:var(--text3);opacity:.5;flex:1;text-align:center}
+.pc-date-end{font-size:9px;font-weight:700;display:flex;align-items:center;gap:3px;white-space:nowrap}
+/* SQUARE PROJECT CARDS */
+#tab-projects{flex-direction:column}
+.proj-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;padding:20px}
+.proj-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;position:relative}
+.proj-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.1);border-color:var(--border2)}
+.proj-card.card-delayed{border-left:3px solid #ef4444}
+.proj-card.card-at-risk{border-left:3px solid #f59e0b}
+.proj-card.card-on-track{border-left:3px solid rgba(16,185,129,.3)}
+.proj-card.card-done{opacity:.6}
+.pc-top-bar{height:3px;width:100%;flex-shrink:0}
+.pc-header{padding:9px 10px 6px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.pc-ws{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.pc-ws-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.pc-body{padding:0 10px 7px;flex:1;display:flex;flex-direction:column;gap:5px}
+.pc-name{font-size:12px;font-weight:700;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pc-status-note{font-size:10px;color:var(--text2);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;flex:1}
+.pc-footer{padding:6px 10px 8px;display:flex;flex-direction:column;gap:5px;border-top:1px solid rgba(0,0,0,.07);margin-top:auto}
+.pc-prog-row{display:flex;align-items:center;gap:6px}
+.pc-prog{flex:1;height:2px;border-radius:2px;background:var(--border)}
+.pc-prog-fill{height:100%;border-radius:2px}
+.pc-prog-pct{font-size:9px;font-weight:700;color:var(--text3);flex-shrink:0}
+.pc-bottom-row{display:flex;align-items:center;justify-content:space-between}
+.pc-team{display:flex;align-items:center;gap:-3px}
+.pc-av{width:16px;height:16px;border-radius:50%;font-size:6px;font-weight:700;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--surface);flex-shrink:0;margin-right:-4px}
+.pc-due{font-size:9px;color:var(--text3);display:flex;align-items:center;gap:3px;flex-shrink:0}
+.pc-due.urgent{color:#f87171}.pc-due.soon{color:#fbbf24}
+/* MEMBER PHOTO */
+.mc-photo{width:42px;height:42px;border-radius:50%;object-fit:cover;margin-bottom:9px;border:2px solid var(--border)}
+.mc-photo-placeholder{width:42px;height:42px;border-radius:50%;margin-bottom:9px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700}
+/* FT / CONTRACTOR BADGE */
+.type-badge{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;text-transform:uppercase;letter-spacing:.3px;flex-shrink:0}
+.type-ft{background:rgba(0,214,50,.1);color:var(--accent2);border:1px solid rgba(0,214,50,.2)}
+.type-contractor{background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.2)}
+/* OOO BADGE */
+.ooo-badge{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:600;padding:2px 6px;border-radius:10px;background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.2);white-space:nowrap}
+.ooo-flag-sm{display:inline-flex;align-items:center;gap:3px;font-size:9px;padding:1px 5px;border-radius:8px;background:rgba(139,92,246,.1);color:#a78bfa;border:1px solid rgba(139,92,246,.18);flex-shrink:0}
+/* ASSIGN PROJECT BUTTON */
+.assign-proj-btn{width:100%;padding:8px;border-radius:7px;border:1px dashed var(--border2);background:transparent;color:var(--accent2);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .2s;margin-top:6px}
+.assign-proj-btn:hover{background:rgba(0,214,50,.08);border-color:var(--accent)}
+/* ASSIGN MODAL */
+.assign-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:110;opacity:0;pointer-events:none;transition:opacity .25s}
+.assign-modal-overlay.active{opacity:1;pointer-events:all}
+.assign-modal{background:var(--bg2);border:1px solid var(--border);border-radius:14px;width:90%;max-width:420px;padding:24px;display:flex;flex-direction:column;gap:14px}
+.assign-modal h3{font-size:16px;font-weight:700}
+.assign-select{width:100%;padding:9px 12px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;outline:none}
+.assign-hrs-row{display:flex;align-items:center;gap:10px}
+.assign-hrs-row input{width:80px;padding:9px 12px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;outline:none;text-align:center}
+.assign-confirm-btn{padding:10px 20px;border-radius:8px;border:none;background:var(--accent);color:#000;font-size:13px;font-weight:700;cursor:pointer;transition:background .2s}
+.assign-confirm-btn:hover{background:var(--accent2)}
+.assign-cancel-btn{padding:10px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:13px;cursor:pointer}
+/* AI TOOLS & RESOURCES */
+.ai-tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:24px}
+.tool-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .2s;display:flex;align-items:flex-start;gap:10px}
+.tool-card:hover{border-color:var(--border2);transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.07)}
+.tool-icon{font-size:20px;line-height:1;flex-shrink:0;margin-top:1px}
+.tool-body{flex:1;min-width:0}
+.tool-name{font-size:12px;font-weight:700;margin-bottom:3px}
+.tool-desc{font-size:10px;color:var(--text3);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tool-cat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--accent3);margin-top:5px;font-weight:600}
+/* DASHBOARD — CREATIVE LEAD */
+.dash-greeting{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding:16px 20px;background:linear-gradient(135deg,rgba(0,214,50,.07),rgba(0,214,50,.02));border:1px solid rgba(0,214,50,.15);border-radius:12px}
+.dash-greet-left{display:flex;flex-direction:column;gap:2px}
+.dash-greet-name{font-size:18px;font-weight:800}
+.dash-greet-sub{font-size:12px;color:var(--text2)}
+.priority-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;transition:all .2s;cursor:pointer}
+.priority-card:hover{border-color:var(--border2);transform:translateY(-1px)}
+.priority-card.pcard-delayed{border-left:3px solid #ef4444}
+.priority-card.pcard-at-risk{border-left:3px solid #f59e0b}
+.pcard-top{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.pcard-name{font-size:13px;font-weight:700;flex:1}
+.pcard-note{font-size:11px;color:var(--text2);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pcard-meta{display:flex;align-items:center;gap:8px;margin-top:7px;flex-wrap:wrap}
+.pulse-row{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);margin-bottom:7px}
+.pulse-av-wrap{position:relative;flex-shrink:0}
+.pulse-av{width:30px;height:30px;border-radius:50%;object-fit:cover;border:1.5px solid var(--border)}
+.pulse-av-placeholder{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;border:1.5px solid var(--border)}
+.pulse-ooo-dot{position:absolute;bottom:-1px;right:-1px;width:10px;height:10px;border-radius:50%;background:#a78bfa;border:1.5px solid var(--bg3)}
+/* DASHBOARD — NEW LAYOUT */
+#tab-dashboard{flex-direction:column;overflow-y:auto;padding:20px 24px;gap:20px}
+.dash-center-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:1100px;width:100%;margin:0 auto}
+@media(max-width:800px){.dash-center-row{grid-template-columns:1fr}}
+/* PROJECTS — WORKSTREAM-GROUPED CARDS */
+.proj-ws-section{margin-bottom:28px}
+.proj-ws-hdr{display:flex;align-items:center;gap:10px;padding:10px 0 10px;border-bottom:1px solid var(--border);margin-bottom:14px;cursor:pointer;user-select:none}
+.proj-ws-hdr:hover .proj-ws-name{color:var(--text)}
+.proj-ws-dot-lg{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.proj-ws-name{font-size:14px;font-weight:700;flex:1;color:var(--text2);transition:color .2s}
+.proj-ws-chips{display:flex;gap:6px;align-items:center}
+.proj-ws-toggle{font-size:10px;color:var(--text3);margin-left:4px;transition:transform .25s}
+.proj-ws-toggle.open{transform:rotate(90deg)}
+.proj-ws-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(315px,1fr));gap:10px}
+/* Proj card hover overlay */
+.pc-overlay{position:absolute;inset:0;background:rgba(0,0,0,0);display:flex;align-items:flex-end;opacity:0;transition:opacity .2s,background .2s;z-index:2;pointer-events:none}
+.proj-card:hover .pc-overlay{opacity:1;background:rgba(0,0,0,.52);pointer-events:all}
+.pc-ov-links{display:flex;gap:5px;padding:10px 12px;flex-wrap:wrap;width:100%}
+.pc-ov-link{padding:5px 10px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.13);color:#fff;font-size:10px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:background .15s;text-decoration:none;font-family:inherit;letter-spacing:.2px}
+.pc-ov-link:hover{background:rgba(255,255,255,.28);border-color:rgba(255,255,255,.6)}
+/* Card team alloc section */
+.pc-team-allocs{margin-top:8px;border-top:1px solid rgba(0,0,0,.08);padding-top:8px;display:flex;flex-direction:column;gap:4px}
+.pc-alloc-label{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:3px}
+.pc-alloc-row{display:flex;align-items:center;gap:7px;padding:4px 6px;background:rgba(0,0,0,.02);border-radius:5px}
+.pc-alloc-av{width:20px;height:20px;border-radius:50%;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pc-alloc-name{font-size:11px;flex:1;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc-alloc-hrs{font-size:11px;font-weight:700;color:var(--accent2);flex-shrink:0}
+/* Card key links */
+.pc-links{display:flex;gap:5px;padding:8px 13px 12px;border-top:1px solid rgba(0,0,0,.07);flex-wrap:wrap}
+.pc-link-btn{padding:5px 10px;border-radius:5px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:11px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .2s;font-family:inherit}
+.pc-link-btn:hover{background:rgba(0,214,50,.12);border-color:var(--accent);color:var(--accent2)}
+/* WEVI NODE VISUAL */
+.pv-wevi{overflow:hidden}
+.wevi-node-overlay{position:absolute;inset:0;z-index:0;pointer-events:none}
+.prompt-visual-icon,.prompt-visual-cat,.prompt-visual-hint{position:relative;z-index:1}
+/* RESOURCE CENTER HUB */
+#tab-hub{padding:0}
+.hub-body{flex:1;overflow-y:auto;padding:24px}
+.hub-hero{background:linear-gradient(135deg,rgba(0,214,50,.08),rgba(0,214,50,.02));border:1px solid rgba(0,214,50,.15);border-radius:14px;padding:24px 28px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.hub-hero-left h2{font-size:22px;font-weight:800;margin-bottom:4px}
+.hub-hero-left p{font-size:13px;color:var(--text2);line-height:1.5}
+.hub-search{position:relative;width:260px;flex-shrink:0}
+.hub-search input{width:100%;padding:9px 34px 9px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;outline:none;transition:border-color .2s}
+.hub-search input:focus{border-color:var(--accent)}
+.hub-search i{position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px;pointer-events:none}
+.hub-cat-section{margin-bottom:28px}
+.hub-cat-title{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;color:var(--text);padding-bottom:8px;border-bottom:1px solid var(--border)}
+.hub-cat-title i{color:var(--accent2);font-size:12px}
+.hub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.hub-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:10px;text-decoration:none;color:inherit}
+.hub-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08)}
+.hub-card-top{display:flex;align-items:center;gap:10px}
+.hub-card-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.hub-card-name{font-size:13px;font-weight:700}
+.hub-card-sub{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-top:1px}
+.hub-card-desc{font-size:11px;color:var(--text2);line-height:1.5}
+.hub-card-arrow{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+.hub-card-tag{font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(0,0,0,.04);color:var(--text3);border:1px solid var(--border);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.hub-external{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:3px}
+/* DASHBOARD — workstream filter bar */
+.ws-filter-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.ws-filter-pill{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:11px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.ws-filter-pill:hover{background:var(--hover);color:var(--text)}
+/* DASHBOARD — over-capacity pulse */
+.pulse-row.pulse-over{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.3)}
+.pulse-over-badge{font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3);flex-shrink:0}
+/* DASHBOARD — RC quick link */
+.dash-rc-link{padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--accent2);font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s;white-space:nowrap}
+.dash-rc-link:hover{background:rgba(0,214,50,.12);border-color:var(--accent)}
+/* PROJECTS — WS filter row */
+.proj-ws-filter-row{display:flex;gap:6px;flex-wrap:wrap;padding:8px 20px;background:var(--bg3);border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto}
+/* RESOURCES — summary banner */
+.res-summary-bar{display:flex;align-items:center;gap:18px;padding:12px 24px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap}
+.res-sum-stat{display:flex;align-items:baseline;gap:6px;flex-shrink:0}
+.res-sum-val{font-size:20px;font-weight:800;line-height:1}
+.res-sum-lbl{font-size:11px;color:var(--text2)}
+.res-sum-div{width:1px;height:28px;background:var(--border);flex-shrink:0}
+.util-bar-wrap{display:flex;align-items:center;gap:8px;flex:1;min-width:140px}
+.util-bar{height:6px;border-radius:3px;background:var(--border);flex:1;overflow:hidden;display:flex}
+.util-seg{height:100%}
+/* RESOURCES — over-capacity card */
+.member-card.overcap{border:2px solid rgba(239,68,68,.55)}
+.member-card.overcap:hover{border-color:#f87171;box-shadow:0 0 0 1px #f87171,0 4px 16px rgba(239,68,68,.2)}
+.overcap-alert{position:absolute;top:8px;right:8px;display:flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:#f87171;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);border-radius:6px;padding:3px 7px}
+.cap-remaining{font-size:10px;font-weight:600;margin-top:3px}
+.cap-remaining.rem-ok{color:#34d399}.cap-remaining.rem-warn{color:#fbbf24}.cap-remaining.rem-danger{color:#fb923c}.cap-remaining.rem-over{color:#f87171}
+/* RESOURCES — 4-tier utilization colors */
+/* Defined inline in JS: 0-60 green, 61-85 yellow, 86-100 orange, 100+ red */
+/* RESOURCES — hover quick actions */
+.mc-hover-actions{display:flex;gap:4px;margin-top:8px}
+.mc-action-btn{flex:1;padding:5px 4px;border-radius:5px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px;transition:all .2s;white-space:nowrap}
+.mc-action-btn:hover{background:rgba(0,214,50,.12);border-color:var(--accent);color:var(--accent2)}
+/* RESOURCES — status dots in proj list */
+.pi-status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+/* AI STUDIO — prompt metadata */
+.prompt-meta-row{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-top:6px}
+.impact-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:.3px}
+.impact-strategic{background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.2)}
+.impact-tactical{background:rgba(0,214,50,.12);color:var(--accent2);border:1px solid rgba(0,214,50,.2)}
+.impact-operational{background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.2)}
+.trend-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;display:inline-flex;align-items:center;gap:2px}
+.trend-hot{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+.trend-popular{background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.2)}
+.trend-new{background:rgba(16,185,129,.1);color:#34d399;border:1px solid rgba(16,185,129,.2)}
+.prompt-attach-btn{margin-top:8px;padding:7px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:11px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;width:100%}
+.prompt-attach-btn:hover{border-color:var(--accent);color:var(--accent2);background:rgba(0,214,50,.06)}
+/* RESOURCE CENTER — sidebar nav + enhancements */
+#tab-hub{flex-direction:row;overflow:hidden}
+.hub-sidebar{width:168px;min-width:168px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;padding:14px 10px;gap:3px;overflow-y:auto}
+.hub-sidebar h4{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);padding:4px 8px;margin-bottom:4px}
+.hub-nav-link{padding:7px 10px;border-radius:6px;font-size:12px;color:var(--text2);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:7px;white-space:nowrap;border:none;background:none;width:100%;text-align:left}
+.hub-nav-link:hover{background:var(--hover);color:var(--text)}
+.hub-nav-link.active{background:rgba(0,214,50,.12);color:var(--accent2);font-weight:600}
+.hub-access{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:.3px;flex-shrink:0}
+.access-open{background:rgba(16,185,129,.08);color:#34d399;border:1px solid rgba(16,185,129,.15)}
+.access-request{background:rgba(245,158,11,.08);color:#fbbf24;border:1px solid rgba(245,158,11,.15)}
+.access-limited{background:rgba(239,68,68,.08);color:#f87171;border:1px solid rgba(239,68,68,.15)}
+.hub-last-updated{font-size:9px;color:var(--text3);margin-top:2px;display:flex;align-items:center;gap:3px}
+.hub-start-section{background:linear-gradient(135deg,rgba(0,214,50,.07),rgba(0,214,50,.02));border:1px solid rgba(0,214,50,.15);border-radius:12px;padding:16px 18px;margin-bottom:22px}
+.hub-start-grid{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.hub-start-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit;white-space:nowrap}
+.hub-start-card:hover{border-color:var(--accent);background:rgba(0,214,50,.06);transform:translateY(-1px)}
+.hub-card-actions{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.hub-quick-btn{font-size:10px;padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:3px}
+.hub-quick-btn:hover{border-color:var(--accent);color:var(--accent2);background:rgba(0,214,50,.06)}
+</style>
+<script type="application/ld+json">{"@context":"urn:goose.ai:schema","@type":"GooseApp","name":"block-creative-command-center","description":"Block Brand Creative Command Center","width":1440,"height":900,"resizable":true,"mcpServers":["apps"]}</script>
+</head>
+<body>
+<header class="app-header">
+  <div class="header-brand"><div class="logo">⬛</div><h1>Block Creative <span class="sub">Command Center</span></h1></div>
+  <nav class="header-nav">
+    <button class="nav-tab active" data-tab="dashboard"><i class="fa-solid fa-gauge-high"></i> <span>Dashboard</span></button>
+    <button class="nav-tab" data-tab="projects"><i class="fa-solid fa-layer-group"></i> <span>Projects</span></button>
+    <button class="nav-tab" data-tab="resources"><i class="fa-solid fa-people-group"></i> <span>Resources</span></button>
+    <button class="nav-tab" data-tab="ai"><i class="fa-solid fa-wand-magic-sparkles"></i> <span>AI Studio</span></button>
+    <button class="nav-tab" data-tab="hub"><i class="fa-solid fa-compass"></i> <span>Resource Center</span></button>
+  </nav>
+  <div class="header-right">
+    <div class="icon-btn notif-dot"><i class="fa-regular fa-bell"></i></div>
+    <div class="icon-btn"><i class="fa-solid fa-gear"></i></div>
+    <div class="avatar">MC</div>
+  </div>
+</header>
+<main class="app-main">
+  <div class="tab-content active" id="tab-dashboard"></div>
+  <div class="tab-content" id="tab-projects">
+    <div class="proj-toolbar">
+      <div style="display:flex;gap:6px;flex-wrap:wrap" id="projFilterGroup">
+        <button class="filter-chip active" data-pf="all">All</button>
+        <button class="filter-chip" data-pf="on-track"><i class="fa-solid fa-circle-check" style="color:#34d399"></i> On Track</button>
+        <button class="filter-chip" data-pf="at-risk"><i class="fa-solid fa-triangle-exclamation" style="color:#fbbf24"></i> At Risk</button>
+        <button class="filter-chip" data-pf="delayed"><i class="fa-solid fa-circle-xmark" style="color:#f87171"></i> Delayed</button>
+        <button class="filter-chip" data-pf="done">Completed</button>
+      </div>
+      <div class="proj-search"><input type="text" id="projSearch" placeholder="Search projects…"><i class="fa-solid fa-magnifying-glass"></i></div>
+      <div class="proj-sort-group">
+        <span class="sort-label">Sort:</span>
+        <button class="sort-btn active" data-ps="ws"><i class="fa-solid fa-layer-group"></i> Workstream</button>
+        <button class="sort-btn" data-ps="launch"><i class="fa-regular fa-calendar-plus"></i> Launch</button>
+        <button class="sort-btn" data-ps="due"><i class="fa-regular fa-calendar-check"></i> Due Date</button>
+      </div>
+      <button class="dash-rc-link" style="margin-left:auto" onclick="switchTab('hub')"><i class="fa-solid fa-compass"></i> Resources</button>
+    </div>
+    <div class="proj-ws-filter-row" id="projWsFilterRow"></div>
+    <div class="proj-list-body" id="projListBody"></div>
+  </div>
+  <div class="tab-content" id="tab-resources">
+    <div class="res-header">
+      <div class="res-title">Resources</div>
+      <div class="res-alerts-badge"><i class="fa-solid fa-triangle-exclamation"></i> <span id="resAlertsCount">0</span> alerts</div>
+      <div class="res-divider"></div>
+      <span class="sort-label">Sort by capacity:</span>
+      <button class="sort-btn active" id="sortHighBtn"><i class="fa-solid fa-arrow-down-wide-short"></i> High → Low</button>
+      <button class="sort-btn" id="sortLowBtn"><i class="fa-solid fa-arrow-up-wide-short"></i> Low → High</button>
+      <div class="res-divider"></div>
+      <div class="res-view-toggle">
+        <button class="view-btn active" id="viewCardsBtn"><i class="fa-solid fa-id-card"></i> Cards</button>
+        <button class="view-btn" id="viewTimelineBtn"><i class="fa-solid fa-timeline"></i> Timeline</button>
+      </div>
+      <div class="res-divider"></div>
+      <div class="res-cap-filter" id="capFilterBar"></div>
+    </div>
+    <div class="res-summary-bar" id="resSummaryBar"></div>
+    <div class="res-body" id="resBody"></div>
+  </div>
+  <div class="tab-content" id="tab-ai">
+    <div class="ai-layout">
+      <aside class="ai-sidebar">
+        <div class="ai-sidebar-sec">
+          <h3>AI Studio</h3>
+          <div class="ai-cat active" data-cat="overview"><i class="fa-solid fa-house"></i> Overview</div>
+          <div class="ai-cat" data-cat="dam"><i class="fa-solid fa-layer-group"></i> DAM</div>
+          <div class="ai-cat" data-cat="education"><i class="fa-solid fa-graduation-cap"></i> Education</div>
+          <div class="ai-cat" data-cat="tools"><i class="fa-solid fa-bookmark"></i> Resources</div>
+        </div>
+        <div class="ai-sidebar-sec">
+          <h3>AI Workflows</h3>
+          <div class="ai-cat" data-cat="all"><i class="fa-solid fa-grid-2"></i> All Prompts</div>
+          <div class="ai-cat" data-cat="wevi"><i class="fa-solid fa-bolt"></i> Wevi Workflows</div>
+          <div class="ai-cat" data-cat="copywriting"><i class="fa-solid fa-pen-nib"></i> Copywriting</div>
+          <div class="ai-cat" data-cat="image"><i class="fa-solid fa-image"></i> Image Creation</div>
+          <div class="ai-cat" data-cat="video"><i class="fa-solid fa-film"></i> Video Creation</div>
+          <div class="ai-cat" data-cat="campaign"><i class="fa-solid fa-bullhorn"></i> Campaign</div>
+          <div class="ai-cat" data-cat="strategy"><i class="fa-solid fa-chess"></i> Strategy</div>
+          <div class="ai-cat" data-cat="social"><i class="fa-solid fa-hashtag"></i> Social</div>
+        </div>
+        <div class="ai-sidebar-sec">
+          <h3>Saved</h3>
+          <div class="ai-cat" data-cat="saved"><i class="fa-regular fa-bookmark"></i> Saved Prompts</div>
+        </div>
+      </aside>
+      <div class="ai-main">
+        <div class="ai-prompt-bar">
+          <div class="ai-input-wrap"><input type="text" class="ai-input" id="aiPromptInput" placeholder="Ask the AI Studio — campaign concepts, visual direction, copy, strategy…"><button class="ai-send" id="aiSendBtn"><i class="fa-solid fa-paper-plane"></i></button></div>
+          <button class="filter-chip" style="padding:9px 14px;border-radius:8px" id="randomPromptBtn"><i class="fa-solid fa-shuffle"></i> Inspire Me</button>
+        </div>
+        <div class="ai-content" id="aiContent"></div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content" id="tab-hub"></div>
+</main>
+<div class="modal-overlay" id="projectModal">
+  <div class="modal"><div class="modal-header"><h2 id="modalTitle"></h2><button class="modal-close" id="closeProjectModal"><i class="fa-solid fa-xmark"></i></button></div><div class="modal-body" id="modalBody"></div></div>
+</div>
+<div class="assign-modal-overlay" id="assignModalOverlay">
+  <div class="assign-modal">
+    <h3 id="assignModalTitle">Assign Project</h3>
+    <div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px">Project</div>
+      <select class="assign-select" id="assignProjectSelect"></select>
+    </div>
+    <div class="assign-hrs-row">
+      <div style="flex:1">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px">Weekly Hours</div>
+        <input type="number" id="assignHrsInput" value="10" min="2" max="40">
+      </div>
+    </div>
+    <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:8px;cursor:pointer">
+      <input type="checkbox" id="assignTentativeCheck" style="width:15px;height:15px;accent-color:#f59e0b;cursor:pointer;flex-shrink:0">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#fbbf24">Mark as Tentative / Earmarked</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:1px">Not confirmed — shown as dashed bar on timeline</div>
+      </div>
+    </label>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="assign-cancel-btn" id="assignCancelBtn">Cancel</button>
+      <button class="assign-confirm-btn" id="assignConfirmBtn"><i class="fa-solid fa-plus"></i> Assign</button>
+    </div>
+  </div>
+</div>
+<div class="member-overlay" id="memberOverlay"></div>
+<div class="member-panel" id="memberPanel">
+  <div class="mp-header"><div class="mp-info"><img id="mpPhoto" src="" alt="" style="width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid var(--border);display:none"><div class="mp-avatar" id="mpAvatar" style="display:flex"></div><div><div class="mp-name" id="mpName"></div><div class="mp-role" id="mpRole"></div><div id="mpFlag" style="display:flex;gap:5px;flex-wrap:wrap;margin-top:4px"></div></div></div><button class="mp-close" id="closeMemberPanel"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="mp-cap"><div class="mp-cap-lbl"><span>Weekly Capacity</span><span id="mpCapPct" style="font-weight:700"></span></div><div class="mp-cap-bar"><div class="mp-cap-fill" id="mpCapBar"></div></div><div class="mp-cap-hrs" id="mpCapHrs"></div></div>
+  <div class="mp-body"><div class="mp-sec-title"><i class="fa-solid fa-layer-group"></i> Project Allocations</div><div id="mpAllocList"></div></div>
+  <div class="mp-footer"><div class="mp-footer-row"><span class="mp-footer-lbl">Total Allocated</span><span class="mp-footer-hrs" id="mpTotalHrs"></span></div><div id="mpOverloadWarn"></div><button class="assign-proj-btn" id="mpAssignBtn"><i class="fa-solid fa-plus"></i> Assign New Project</button></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+var WS=[{name:'Block Brand Design',color:'#F849C1'},{name:'Releases',color:'#874FFF'},{name:'Seller',color:'#888888'},{name:'Core Web',color:'#14B4FF'},{name:'Growth Products',color:'#14B4FF'},{name:'Consumer Creative',color:'#00E400'},{name:'Brand Partnerships',color:'#CEFF00'},{name:'Bitcoin',color:'#FF9E42'},{name:'Creative Ops',color:'#B3B3B3'}];
+var PROJECTS=[
+  {id:'2026-CCDG-001',name:'Money App Campaign',       ws:'Consumer Creative', wsColor:'#00E400',status:'active',  pStatus:'on-track',progress:65, startDate:'Feb 10',dueDate:'Mar 28',lead:'PK',team:['PK','JC','AD','ST','LH'],tags:['Campaign','OOH'],     statusNote:'Assets 65% complete. Creative review Mar 18, OOH + digital on track for Mar 28 launch.',milestones:[{name:'Creative Review',date:'Mar 18',urg:'normal'},{name:'Asset Delivery',date:'Mar 23',urg:'normal'},{name:'Final Launch',date:'Mar 28',urg:'normal'}]},
+  {id:'2026-BBDS-002',name:'Brand Refresh Q2',         ws:'Block Brand Design',wsColor:'#F849C1',status:'briefing',pStatus:'on-track',progress:15, startDate:'Mar 15',dueDate:'Apr 15',lead:'AD',team:['AD','MW','JC','KT'],   tags:['Brand','Systems'],   statusNote:'Brief phase. Systems architecture and concept review due Apr 1 for full Q2 brand refresh.',milestones:[{name:'Brief Approval',date:'Mar 15',urg:'soon'},{name:'Concepts Review',date:'Apr 1',urg:'normal'},{name:'Final Systems',date:'Apr 15',urg:'normal'}]},
+  {id:'2026-SLDG-003',name:'Spring Seller Push',       ws:'Seller',            wsColor:'#888888',status:'active',  pStatus:'at-risk', progress:45, startDate:'Mar 1', dueDate:'Mar 20',lead:'MW',team:['MW','KT','PK','AD'],   tags:['Campaign','Demand Gen'],statusNote:'Copy overdue — assets deadline Mar 16, at risk of missing Mar 20 demand gen launch.',milestones:[{name:'Copy Due',date:'Mar 14',urg:'urgent'},{name:'Assets Due',date:'Mar 16',urg:'soon'},{name:'Launch',date:'Mar 20',urg:'soon'}]},
+  {id:'2026-RELS-004',name:'Q2 Release Assets',        ws:'Releases',          wsColor:'#874FFF',status:'review',  pStatus:'delayed', progress:88, startDate:'Feb 20',dueDate:'Mar 14',lead:'JC',team:['JC','KT','AD','ST'],   tags:['Release','Digital'],  statusNote:'Final assets overdue, QA blocked. DELAYED — immediate sign-off needed to publish Mar 14.',milestones:[{name:'Final Assets',date:'Mar 12',urg:'urgent'},{name:'QA Sign-off',date:'Mar 13',urg:'urgent'},{name:'Publish',date:'Mar 14',urg:'urgent'}]},
+  {id:'2026-CWEB-005',name:'Homepage Redesign',        ws:'Core Web',          wsColor:'#14B4FF',status:'active',  pStatus:'on-track',progress:30, startDate:'Mar 1', dueDate:'Apr 30',lead:'DP',team:['DP','JC','ST'],        tags:['Web','UX'],           statusNote:'Homepage 30% complete. Design review Mar 25, dev handoff Apr 15 — on schedule.',milestones:[{name:'Design Review',date:'Mar 25',urg:'normal'},{name:'Dev Handoff',date:'Apr 15',urg:'normal'},{name:'Launch',date:'Apr 30',urg:'normal'}]},
+  {id:'2026-BRPT-006',name:'Fintech Summit Collab',    ws:'Brand Partnerships',wsColor:'#CEFF00',status:'briefing',pStatus:'at-risk', progress:5,  startDate:'Mar 18',dueDate:'May 10',lead:'LH',team:['LH','PK','AD'],        tags:['Partnership'],        statusNote:'Early stage — brief pending partner alignment. May 10 collab at risk without sign-off.',milestones:[{name:'Brief Sign-off',date:'Mar 20',urg:'soon'},{name:'Concept Review',date:'Apr 10',urg:'normal'},{name:'Collab Launch',date:'May 10',urg:'normal'}]},
+  {id:'2026-BTCG-007',name:'Bitcoin Awareness Series', ws:'Bitcoin',           wsColor:'#FF9E42',status:'review',  pStatus:'delayed', progress:92, startDate:'Feb 15',dueDate:'Mar 12',lead:'ST',team:['ST','MW','JC','LH','KT'],tags:['Campaign','Social'],  statusNote:'92% done but launch files delayed — needs final push to hit Mar 12 go-live target.',milestones:[{name:'Final Files',date:'Mar 10',urg:'urgent'},{name:'Launch',date:'Mar 12',urg:'urgent'}]},
+  {id:'2026-GRWP-008',name:'Afterpay Growth Blitz',    ws:'Growth Products',   wsColor:'#14B4FF',status:'active',  pStatus:'on-track',progress:55, startDate:'Mar 5', dueDate:'Apr 5', lead:'DP',team:['DP','ST','KT','PK'],   tags:['Growth','Performance'],statusNote:'Growth blitz in full swing. Mid-review Mar 22, final delivery Afterpay Apr 5.',milestones:[{name:'Mid Review',date:'Mar 22',urg:'normal'},{name:'Optimization',date:'Mar 29',urg:'normal'},{name:'Final Delivery',date:'Apr 5',urg:'normal'}]},
+  {id:'2026-CCLC-009',name:'CashApp Lifecycle Refresh',ws:'Consumer Creative', wsColor:'#00E400',status:'done',    pStatus:'done',    progress:100,startDate:'Jan 20',dueDate:'Mar 1', lead:'PK',team:['PK','LH'],             tags:['Lifecycle','Email'],  statusNote:'Completed. Email and lifecycle flows delivered and live as of Mar 1.',milestones:[]},
+  {id:'2026-COPS-010',name:'Production SOP Update',    ws:'Creative Ops',      wsColor:'#B3B3B3',status:'done',    pStatus:'done',    progress:100,startDate:'Feb 1', dueDate:'Feb 28',lead:'KT',team:['KT','AD'],             tags:['Internal','Ops'],     statusNote:'Completed. Production SOP documentation finalized and distributed Feb 28.',milestones:[]},
+  {id:'2026-BBDP-011',name:'Annual Report Film',       ws:'Block Brand Design',wsColor:'#F849C1',status:'briefing',pStatus:'on-track',progress:8,  startDate:'Mar 18',dueDate:'Jun 1', lead:'AD',team:['AD','MW','KT'],        tags:['Video','Brand'],      statusNote:'Annual film in brief phase. Script approval Apr 1, shoot week begins May 15.',milestones:[{name:'Script Approval',date:'Apr 1',urg:'normal'},{name:'Shoot Week',date:'May 15',urg:'normal'},{name:'Final Cut',date:'Jun 1',urg:'normal'}]},
+  {id:'2026-CCSO-012',name:'Social Refresh Spring',    ws:'Consumer Creative', wsColor:'#00E400',status:'active',  pStatus:'on-track',progress:40, startDate:'Mar 8', dueDate:'Apr 10',lead:'LH',team:['LH','JC','PK','ST'],   tags:['Social','Content'],   statusNote:'Social refresh underway. Content calendar due Mar 20, first batch goes live Apr 1.',milestones:[{name:'Content Calendar',date:'Mar 20',urg:'soon'},{name:'First Batch Live',date:'Apr 1',urg:'normal'},{name:'Full Rollout',date:'Apr 10',urg:'normal'}]},
+  // Block Brand Design (2→5)
+  {id:'2026-BBDS-013',name:'Merch Collection Design',  ws:'Block Brand Design',wsColor:'#F849C1',status:'active',  pStatus:'on-track',progress:55,startDate:'Feb 28',dueDate:'Apr 20',lead:'JC',team:['JC','NK','MW'],       tags:['Brand','Merch'],      statusNote:'T-shirt and accessory designs 55% complete. Final colorway review Apr 5, files due Apr 20.',milestones:[{name:'Colorway Review',date:'Apr 5',urg:'normal'},{name:'Final Files',date:'Apr 20',urg:'normal'}]},
+  {id:'2026-BBDS-014',name:'Brand Typography Update',  ws:'Block Brand Design',wsColor:'#F849C1',status:'briefing',pStatus:'on-track',progress:10,startDate:'Mar 15',dueDate:'May 1', lead:'AD',team:['AD','JC'],            tags:['Brand','Typography'], statusNote:'Type system brief in progress. Stakeholder alignment due Apr 1 before design begins.',milestones:[{name:'Brief Approval',date:'Apr 1',urg:'normal'}]},
+  {id:'2026-BBDS-015',name:'Q2 Campaign Identity',     ws:'Block Brand Design',wsColor:'#F849C1',status:'active',  pStatus:'at-risk', progress:35,startDate:'Mar 10',dueDate:'Apr 10',lead:'ST',team:['ST','AD','JC','NK'],   tags:['Brand','Identity'],   statusNote:'Concept phase behind schedule — identity locked needed by Mar 25 to stay on track for Apr 10.',milestones:[{name:'Identity Lock',date:'Mar 25',urg:'soon'},{name:'Final Delivery',date:'Apr 10',urg:'normal'}]},
+  // Releases (1→5)
+  {id:'2026-RELS-016',name:'Mar App Release Creative', ws:'Releases',          wsColor:'#874FFF',status:'active',  pStatus:'on-track',progress:70,startDate:'Mar 5', dueDate:'Mar 25',lead:'JC',team:['JC','KT','ST'],       tags:['Release','Mobile'],   statusNote:'Mar release assets 70% done. Final review Mar 22, ready for App Store Mar 25.',milestones:[{name:'Final Review',date:'Mar 22',urg:'soon'},{name:'App Store',date:'Mar 25',urg:'soon'}]},
+  {id:'2026-RELS-017',name:'Q2 Feature Announcement',  ws:'Releases',          wsColor:'#874FFF',status:'briefing',pStatus:'on-track',progress:5, startDate:'Mar 20',dueDate:'Apr 28',lead:'AD',team:['AD','JC','NK'],        tags:['Release','Announce'], statusNote:'Brief kick-off Mar 20. Multi-channel announcement assets for Q2 feature reveal Apr 28.',milestones:[{name:'Brief Kick-off',date:'Mar 20',urg:'soon'},{name:'Asset Delivery',date:'Apr 25',urg:'normal'}]},
+  {id:'2026-RELS-018',name:'API Release Assets',       ws:'Releases',          wsColor:'#874FFF',status:'active',  pStatus:'at-risk', progress:40,startDate:'Mar 8', dueDate:'Apr 5', lead:'DP',team:['DP','JC','ST'],        tags:['Release','Dev'],      statusNote:'Dev docs and launch graphics at risk — design review pushed twice. Needs final push by Apr 1.',milestones:[{name:'Design Review',date:'Mar 28',urg:'soon'},{name:'Final Assets',date:'Apr 5',urg:'normal'}]},
+  {id:'2026-RELS-019',name:'Apr Release Prep Kit',     ws:'Releases',          wsColor:'#874FFF',status:'briefing',pStatus:'on-track',progress:0, startDate:'Mar 25',dueDate:'Apr 30',lead:'KT',team:['KT','JC'],             tags:['Release','Kit'],      statusNote:'Planning phase for April release. Scope pending engineering roadmap confirmation.',milestones:[{name:'Scope Confirmed',date:'Apr 1',urg:'normal'},{name:'Kit Delivery',date:'Apr 30',urg:'normal'}]},
+  // Seller (1→5)
+  {id:'2026-SLRS-020',name:'Summer Seller Campaign',   ws:'Seller',            wsColor:'#888888',status:'briefing',pStatus:'on-track',progress:8, startDate:'Mar 18',dueDate:'May 15',lead:'PK',team:['PK','JC','LH','AD'],   tags:['Campaign','Seller'],  statusNote:'Summer campaign brief in progress. Target launch May 15 with OOH + digital push.',milestones:[{name:'Brief Approval',date:'Apr 5',urg:'normal'},{name:'Creative Review',date:'Apr 28',urg:'normal'}]},
+  {id:'2026-SLRS-021',name:'Seller Onboarding Refresh',ws:'Seller',            wsColor:'#888888',status:'active',  pStatus:'on-track',progress:45,startDate:'Mar 1', dueDate:'Apr 15',lead:'DF',team:['DF','JC','NK'],        tags:['Seller','UX'],        statusNote:'Onboarding flow redesign 45% complete. New illustrations and copy due Apr 1.',milestones:[{name:'Illustrations Due',date:'Apr 1',urg:'normal'},{name:'Final Handoff',date:'Apr 15',urg:'normal'}]},
+  {id:'2026-SLRS-022',name:'Seller Success Stories',   ws:'Seller',            wsColor:'#888888',status:'active',  pStatus:'at-risk', progress:30,startDate:'Mar 5', dueDate:'Mar 30',lead:'LH',team:['LH','ST','PK'],        tags:['Seller','Content'],   statusNote:'Case study video scripts overdue. Three stories need approval before production can start.',milestones:[{name:'Scripts Approved',date:'Mar 20',urg:'soon'},{name:'Video Delivery',date:'Mar 30',urg:'soon'}]},
+  {id:'2026-SLRS-023',name:'Seller App Screenshots',   ws:'Seller',            wsColor:'#888888',status:'done',    pStatus:'done',    progress:100,startDate:'Jan 15',dueDate:'Feb 28',lead:'NK',team:['NK','JC'],             tags:['Seller','Mobile'],    statusNote:'Completed. Updated App Store screenshots and preview videos live as of Feb 28.',milestones:[]},
+  // Core Web (1→5)
+  {id:'2026-CWEB-024',name:'Checkout Flow Redesign',   ws:'Core Web',          wsColor:'#14B4FF',status:'active',  pStatus:'on-track',progress:25,startDate:'Mar 10',dueDate:'May 15',lead:'DP',team:['DP','JC','ST'],        tags:['Web','UX'],           statusNote:'Checkout UX redesign in early design phase. User testing planned Apr 10.',milestones:[{name:'User Testing',date:'Apr 10',urg:'normal'},{name:'Dev Handoff',date:'May 1',urg:'normal'}]},
+  {id:'2026-CWEB-025',name:'Mobile Web Optimization',  ws:'Core Web',          wsColor:'#14B4FF',status:'briefing',pStatus:'on-track',progress:12,startDate:'Mar 20',dueDate:'May 30',lead:'NK',team:['NK','DP'],             tags:['Web','Mobile'],       statusNote:'Mobile performance and visual polish brief in progress. Scope includes LCP and CLS improvements.',milestones:[{name:'Audit Complete',date:'Apr 5',urg:'normal'}]},
+  {id:'2026-CWEB-026',name:'SEO Content Refresh',      ws:'Core Web',          wsColor:'#14B4FF',status:'active',  pStatus:'at-risk', progress:60,startDate:'Feb 20',dueDate:'Apr 1', lead:'AO',team:['AO','LH','CW'],        tags:['Web','SEO'],          statusNote:'60% complete but key pillar pages blocked on legal review. Apr 1 deadline at risk.',milestones:[{name:'Legal Review',date:'Mar 22',urg:'soon'},{name:'Pages Live',date:'Apr 1',urg:'normal'}]},
+  {id:'2026-CWEB-027',name:'Web Component Library',    ws:'Core Web',          wsColor:'#14B4FF',status:'done',    pStatus:'done',    progress:100,startDate:'Jan 20',dueDate:'Mar 5', lead:'DP',team:['DP','JC','NK'],        tags:['Web','Design System'],statusNote:'Completed. Shared component library v2.0 shipped Mar 5 — 48 components documented.',milestones:[]},
+  // Brand Partnerships (1→5)
+  {id:'2026-BRPT-028',name:'NBA Collab Creative',      ws:'Brand Partnerships',wsColor:'#CEFF00',status:'active',  pStatus:'on-track',progress:50,startDate:'Mar 1', dueDate:'Apr 20',lead:'AD',team:['AD','MW','ST','LH'],   tags:['Partnership','Sports'],statusNote:'NBA activation assets 50% complete. Court-side and digital assets on track for Apr 20 tip-off.',milestones:[{name:'Asset Review',date:'Apr 5',urg:'normal'},{name:'Final Delivery',date:'Apr 20',urg:'normal'}]},
+  {id:'2026-BRPT-029',name:'Music Festival Sponsorship',ws:'Brand Partnerships',wsColor:'#CEFF00',status:'briefing',pStatus:'on-track',progress:5, startDate:'Mar 18',dueDate:'May 20',lead:'PK',team:['PK','ST','MW'],       tags:['Partnership','Music'], statusNote:'Coachella-adjacent activation brief in early stages. Activation brief due Apr 1.',milestones:[{name:'Brief Sign-off',date:'Apr 1',urg:'normal'},{name:'Final Concepts',date:'Apr 30',urg:'normal'}]},
+  {id:'2026-BRPT-030',name:'Fashion Week Partnership', ws:'Brand Partnerships',wsColor:'#CEFF00',status:'active',  pStatus:'at-risk', progress:35,startDate:'Feb 25',dueDate:'Mar 28',lead:'LH',team:['LH','AD','NK'],        tags:['Partnership','Fashion'],statusNote:'NYFW collab assets at risk — two rounds of brand revisions have consumed timeline.',milestones:[{name:'Brand Approval',date:'Mar 22',urg:'soon'},{name:'Final Assets',date:'Mar 28',urg:'soon'}]},
+  {id:'2026-BRPT-031',name:'Esports Activation',      ws:'Brand Partnerships',wsColor:'#CEFF00',status:'briefing',pStatus:'on-track',progress:0, startDate:'Apr 1', dueDate:'Jun 15',lead:'MW',team:['MW','JC'],             tags:['Partnership','Gaming'],statusNote:'New esports sponsorship opportunity in brief stage. Tournament activation Q2 target.',milestones:[{name:'Brief Approval',date:'Apr 10',urg:'normal'}]},
+  // Bitcoin (1→5)
+  {id:'2026-BTCG-032',name:'Bitcoin Education Series', ws:'Bitcoin',           wsColor:'#FF9E42',status:'active',  pStatus:'on-track',progress:40,startDate:'Mar 5', dueDate:'Apr 25',lead:'CW',team:['CW','LH','AO','ST'],   tags:['Bitcoin','Education'],statusNote:'4-part content series 40% complete. Articles + infographics on track for weekly drops.',milestones:[{name:'Part 2 Live',date:'Mar 28',urg:'normal'},{name:'Series Complete',date:'Apr 25',urg:'normal'}]},
+  {id:'2026-BTCG-033',name:'Halving Event Campaign',  ws:'Bitcoin',           wsColor:'#FF9E42',status:'briefing',pStatus:'on-track',progress:15,startDate:'Mar 15',dueDate:'Apr 18',lead:'AD',team:['AD','ST','MW','JC'],   tags:['Bitcoin','Campaign'], statusNote:'Bitcoin halving campaign brief approved. Major integrated push targeting Apr 18 halving date.',milestones:[{name:'Concepts Review',date:'Apr 1',urg:'normal'},{name:'Campaign Live',date:'Apr 18',urg:'normal'}]},
+  {id:'2026-BTCG-034',name:'Bitcoin App Rebrand',     ws:'Bitcoin',           wsColor:'#FF9E42',status:'active',  pStatus:'at-risk', progress:25,startDate:'Feb 15',dueDate:'Apr 30',lead:'JC',team:['JC','NK','DP','MW'],   tags:['Bitcoin','Brand'],    statusNote:'App icon and UI refresh behind due to scope expansion. Engineering alignment needed urgently.',milestones:[{name:'Engineering Sync',date:'Mar 25',urg:'soon'},{name:'Final Designs',date:'Apr 30',urg:'normal'}]},
+  {id:'2026-BTCG-035',name:'BTC Milestone Assets',    ws:'Bitcoin',           wsColor:'#FF9E42',status:'done',    pStatus:'done',    progress:100,startDate:'Feb 1', dueDate:'Feb 25',lead:'ST',team:['ST','JC'],             tags:['Bitcoin','Social'],   statusNote:'Completed. Price milestone social assets delivered and published Feb 25.',milestones:[]},
+  // Growth Products (1→5)
+  {id:'2026-GRWP-036',name:'Refer a Friend Campaign', ws:'Growth Products',   wsColor:'#14B4FF',status:'active',  pStatus:'on-track',progress:65,startDate:'Mar 3', dueDate:'Apr 10',lead:'PK',team:['PK','LH','NK','DP'],   tags:['Growth','Referral'],  statusNote:'RAF campaign creative 65% done. Email, push, and in-app assets on track for Apr 10 launch.',milestones:[{name:'Creative Review',date:'Mar 28',urg:'normal'},{name:'Launch Assets',date:'Apr 10',urg:'normal'}]},
+  {id:'2026-GRWP-037',name:'Cash App Card Refresh',   ws:'Growth Products',   wsColor:'#14B4FF',status:'briefing',pStatus:'on-track',progress:20,startDate:'Mar 12',dueDate:'May 5', lead:'JC',team:['JC','MW','NK'],        tags:['Growth','Product'],   statusNote:'Card design refresh brief approved. New colorways and packaging concepts in ideation.',milestones:[{name:'Concepts Presented',date:'Apr 10',urg:'normal'},{name:'Final Design',date:'May 5',urg:'normal'}]},
+  {id:'2026-GRWP-038',name:'Boost Promotion Series',  ws:'Growth Products',   wsColor:'#14B4FF',status:'active',  pStatus:'at-risk', progress:45,startDate:'Mar 8', dueDate:'Apr 2', lead:'ST',team:['ST','LH','PK'],        tags:['Growth','Promotions'],statusNote:'Boost promo creative is behind — partner artwork approvals pending for three merchants.',milestones:[{name:'Partner Approvals',date:'Mar 22',urg:'soon'},{name:'Go-Live',date:'Apr 2',urg:'normal'}]},
+  {id:'2026-GRWP-039',name:'International Expansion', ws:'Growth Products',   wsColor:'#14B4FF',status:'briefing',pStatus:'on-track',progress:8, startDate:'Mar 20',dueDate:'Jun 1', lead:'AD',team:['AD','CW','AO','JC'],   tags:['Growth','International'],statusNote:'Expanding to UK and EU markets. Localization brief in progress — legal review Apr 1.',milestones:[{name:'Brief Approval',date:'Apr 1',urg:'normal'},{name:'Localized Assets',date:'Jun 1',urg:'normal'}]},
+  // Consumer Creative (3→5)
+  {id:'2026-CCCR-040',name:'Banking Feature Launch',  ws:'Consumer Creative', wsColor:'#00E400',status:'active',  pStatus:'on-track',progress:55,startDate:'Mar 5', dueDate:'Apr 15',lead:'PK',team:['PK','LH','JC','AO'],   tags:['Consumer','Banking'], statusNote:'Savings and budgeting feature launch assets 55% complete. Email and in-app assets on track.',milestones:[{name:'In-App Review',date:'Apr 1',urg:'normal'},{name:'Launch Day',date:'Apr 15',urg:'normal'}]},
+  {id:'2026-CCCR-041',name:'Direct Deposit Push',     ws:'Consumer Creative', wsColor:'#00E400',status:'briefing',pStatus:'on-track',progress:10,startDate:'Mar 22',dueDate:'May 1', lead:'CW',team:['CW','LH','PK'],        tags:['Consumer','CRM'],     statusNote:'Direct deposit awareness campaign brief in progress. Targeting underbanked audience segment.',milestones:[{name:'Brief Approval',date:'Apr 5',urg:'normal'},{name:'Campaign Live',date:'May 1',urg:'normal'}]},
+  // Creative Ops (1→5)
+  {id:'2026-COPS-042',name:'Brand Asset Audit',       ws:'Creative Ops',      wsColor:'#B3B3B3',status:'active',  pStatus:'on-track',progress:35,startDate:'Mar 1', dueDate:'Apr 10',lead:'KT',team:['KT','DF','AD'],        tags:['Ops','Audit'],        statusNote:'Cataloguing and tagging all brand assets in DAM. 35% of library reviewed and tagged.',milestones:[{name:'Phase 1 Complete',date:'Mar 25',urg:'normal'},{name:'Full Audit',date:'Apr 10',urg:'normal'}]},
+  {id:'2026-COPS-043',name:'Vendor Management Update',ws:'Creative Ops',      wsColor:'#B3B3B3',status:'done',    pStatus:'done',    progress:100,startDate:'Feb 1', dueDate:'Mar 1', lead:'DF',team:['DF','KT'],             tags:['Ops','Vendors'],      statusNote:'Completed. Vendor directory updated, 6 new preferred partners onboarded as of Mar 1.',milestones:[]},
+  {id:'2026-COPS-044',name:'Q2 Resource Planning',    ws:'Creative Ops',      wsColor:'#B3B3B3',status:'active',  pStatus:'on-track',progress:50,startDate:'Mar 10',dueDate:'Apr 5', lead:'AD',team:['AD','KT','DF'],        tags:['Ops','Planning'],     statusNote:'Q2 headcount and contractor needs 50% mapped. Capacity gaps identified in motion and design.',milestones:[{name:'Draft Complete',date:'Mar 25',urg:'normal'},{name:'Final Plan',date:'Apr 5',urg:'normal'}]},
+  {id:'2026-COPS-045',name:'Creative Team Offsite',   ws:'Creative Ops',      wsColor:'#B3B3B3',status:'briefing',pStatus:'on-track',progress:5, startDate:'Mar 18',dueDate:'May 10',lead:'KT',team:['KT','AD','DF'],        tags:['Ops','Team'],         statusNote:'Q2 offsite planning in early stages. Venue research and agenda framework due Apr 1.',milestones:[{name:'Venue Confirmed',date:'Apr 1',urg:'normal'},{name:'Agenda Final',date:'Apr 20',urg:'normal'}]},
+];
+var TEAM=[
+  // Creative Lead
+  {name:'Cardi B',         initials:'AD',role:'Creative Director',       dept:'creative-lead',type:'ft',        color:'#F849C1',capacity:85,weeklyCapHrs:40,img:'https://i.pravatar.cc/80?img=23',ooo:null},
+  {name:'Missy Elliott',   initials:'MC',role:'Group Creative Director',  dept:'creative-lead',type:'ft',        color:'#874FFF',capacity:60,weeklyCapHrs:40,img:'https://i.pravatar.cc/80?img=45',ooo:{start:'Mar 18',end:'Mar 21',note:'Design Conf.'}},
+  // Design
+  {name:'Jay-Z',           initials:'JC',role:'Sr. Designer',             dept:'design',       type:'ft',        color:'#874FFF',capacity:70,weeklyCapHrs:40,img:'https://i.pravatar.cc/80?img=11',ooo:null},
+  {name:'Snoop Dogg',      initials:'ST',role:'Sr. Art Director',         dept:'design',       type:'ft',        color:'#FF9E42',capacity:80,weeklyCapHrs:40,img:'https://i.pravatar.cc/80?img=62',ooo:null},
+  {name:'Nicki Minaj',     initials:'NK',role:'Brand Designer',           dept:'design',       type:'ft',        color:'#14B4FF',capacity:45,weeklyCapHrs:40,img:'https://i.pravatar.cc/80?img=48',ooo:{start:'Mar 25',end:'Mar 28',note:'Vacation'}},
+  {name:'Drake',           initials:'DP',role:'Design Technologist',      dept:'design',       type:'ft',        color:'#97FFE2',capacity:90,weeklyCapHrs:40,img:'https://i.pravatar.cc/80?img=17',ooo:null},
+  // 3D & Motion
+  {name:'Megan Thee Stallion',initials:'MW',role:'Motion Designer',       dept:'motion-3d',    type:'ft',        color:'#00E400',capacity:60,weeklyCapHrs:40,img:'https://i.pravatar.cc/80?img=38',ooo:null},
+  {name:'Lil Wayne',       initials:'ZA',role:'3D Artist',                dept:'motion-3d',    type:'contractor',color:'#F849C1',capacity:55,weeklyCapHrs:32,img:'https://i.pravatar.cc/80?img=14',ooo:null},
+  {name:'Lil Baby',        initials:'LP',role:'Motion Lead',              dept:'motion-3d',    type:'ft',        color:'#CEFF00',capacity:75,weeklyCapHrs:40,img:'https://i.pravatar.cc/80?img=4', ooo:{start:'Apr 1',end:'Apr 4',note:'Personal Leave'}},
+  // Strategy
+  {name:'Kendrick Lamar',  initials:'PK',role:'Brand Strategist',         dept:'strategy',     type:'ft',        color:'#14B4FF',capacity:95,weeklyCapHrs:40,img:'https://i.pravatar.cc/80?img=69',ooo:null},
+  {name:'A$AP Rocky',      initials:'SR',role:'Creative Strategist',      dept:'strategy',     type:'contractor',color:'#FF9E42',capacity:40,weeklyCapHrs:32,img:'https://i.pravatar.cc/80?img=53',ooo:null},
+  {name:'Chance the Rapper',initials:'CW',role:'Content Strategist',      dept:'strategy',     type:'ft',        color:'#D3B4ED',capacity:65,weeklyCapHrs:40,img:'https://i.pravatar.cc/80?img=21',ooo:null},
+  // Production
+  {name:'Kanye West',      initials:'KT',role:'Producer',                 dept:'production',   type:'ft',        color:'#CEFF00',capacity:75,weeklyCapHrs:40,img:'https://i.pravatar.cc/80?img=8', ooo:{start:'Mar 20',end:'Mar 21',note:'Offsite'}},
+  {name:'J. Cole',         initials:'DF',role:'Project Manager',          dept:'production',   type:'ft',        color:'#FF9E42',capacity:50,weeklyCapHrs:40,img:'https://i.pravatar.cc/80?img=57',ooo:null},
+  {name:'Travis Scott',    initials:'BT',role:'Production Coordinator',   dept:'production',   type:'contractor',color:'#B3B3B3',capacity:35,weeklyCapHrs:24,img:'https://i.pravatar.cc/80?img=63',ooo:null},
+  // Writing
+  {name:'Lauryn Hill',     initials:'LH',role:'Copywriter',               dept:'writing',      type:'ft',        color:'#D3B4ED',capacity:50,weeklyCapHrs:40,img:'https://i.pravatar.cc/80?img=29',ooo:{start:'Apr 7',end:'Apr 11',note:'Vacation'}},
+  {name:'Andre 3000',      initials:'AO',role:'Senior Copywriter',        dept:'writing',      type:'ft',        color:'#00E400',capacity:70,weeklyCapHrs:40,img:'https://i.pravatar.cc/80?img=6', ooo:null},
+  {name:'Mac Miller',      initials:'MS',role:'Content Writer',           dept:'writing',      type:'contractor',color:'#874FFF',capacity:30,weeklyCapHrs:24,img:'https://i.pravatar.cc/80?img=19',ooo:null},
+];
+var ALLOC={
+  'AD':[{pid:'2026-BBDS-002',hrs:20,name:'Brand Refresh Q2',        wsColor:'#F849C1',dueDate:'Apr 15',pStatus:'on-track'},{pid:'2026-BBDP-011',hrs:12,name:'Annual Report Film',       wsColor:'#F849C1',dueDate:'Jun 1', pStatus:'on-track'}],
+  'MC':[{pid:'2026-BBDS-002',hrs:8, name:'Brand Refresh Q2',        wsColor:'#F849C1',dueDate:'Apr 15',pStatus:'on-track'},{pid:'2026-CCDG-001',hrs:6, name:'Money App Campaign',       wsColor:'#00E400',dueDate:'Mar 28',pStatus:'on-track'}],
+  'JC':[{pid:'2026-RELS-004',hrs:24,name:'Q2 Release Assets',       wsColor:'#874FFF',dueDate:'Mar 14',pStatus:'delayed'},{pid:'2026-BBDS-002',hrs:8, name:'Brand Refresh Q2',          wsColor:'#F849C1',dueDate:'Apr 15',pStatus:'on-track'}],
+  'ST':[{pid:'2026-BTCG-007',hrs:26,name:'Bitcoin Awareness Series',wsColor:'#FF9E42',dueDate:'Mar 12',pStatus:'delayed'},{pid:'2026-GRWP-008',hrs:14,name:'Afterpay Growth Blitz',     wsColor:'#14B4FF',dueDate:'Apr 5', pStatus:'on-track'}],
+  'NK':[{pid:'2026-CCDG-001',hrs:14,name:'Money App Campaign',      wsColor:'#00E400',dueDate:'Mar 28',pStatus:'on-track'},{pid:'2026-CCSO-012',hrs:8, name:'Social Refresh Spring',    wsColor:'#00E400',dueDate:'Apr 10',pStatus:'on-track'}],
+  'DP':[{pid:'2026-CWEB-005',hrs:28,name:'Homepage Redesign',        wsColor:'#14B4FF',dueDate:'Apr 30',pStatus:'on-track'},{pid:'2026-GRWP-008',hrs:10,name:'Afterpay Growth Blitz',    wsColor:'#14B4FF',dueDate:'Apr 5', pStatus:'on-track'}],
+  'MW':[{pid:'2026-SLDG-003',hrs:22,name:'Spring Seller Push',       wsColor:'#888888',dueDate:'Mar 20',pStatus:'at-risk'},{pid:'2026-BBDS-002',hrs:6, name:'Brand Refresh Q2',          wsColor:'#F849C1',dueDate:'Apr 15',pStatus:'on-track'}],
+  'ZA':[{pid:'2026-BTCG-007',hrs:20,name:'Bitcoin Awareness Series',wsColor:'#FF9E42',dueDate:'Mar 12',pStatus:'delayed'},{pid:'2026-BBDP-011',hrs:12,name:'Annual Report Film',         wsColor:'#F849C1',dueDate:'Jun 1', pStatus:'on-track'}],
+  'LP':[{pid:'2026-GRWP-008',hrs:16,name:'Afterpay Growth Blitz',   wsColor:'#14B4FF',dueDate:'Apr 5', pStatus:'on-track'},{pid:'2026-SLDG-003',hrs:10,name:'Spring Seller Push',        wsColor:'#888888',dueDate:'Mar 20',pStatus:'at-risk'}],
+  'PK':[{pid:'2026-CCDG-001',hrs:18,name:'Money App Campaign',       wsColor:'#00E400',dueDate:'Mar 28',pStatus:'on-track'},{pid:'2026-BRPT-006',hrs:12,name:'Fintech Summit Collab',    wsColor:'#CEFF00',dueDate:'May 10',pStatus:'at-risk'},{pid:'2026-CCLC-009',hrs:10,name:'CashApp Lifecycle Refresh',wsColor:'#00E400',dueDate:'Mar 1',pStatus:'done'}],
+  'SR':[{pid:'2026-BRPT-006',hrs:14,name:'Fintech Summit Collab',    wsColor:'#CEFF00',dueDate:'May 10',pStatus:'at-risk'},{pid:'2026-CCDG-001',hrs:8, name:'Money App Campaign',        wsColor:'#00E400',dueDate:'Mar 28',pStatus:'on-track'}],
+  'CW':[{pid:'2026-CCSO-012',hrs:12,name:'Social Refresh Spring',    wsColor:'#00E400',dueDate:'Apr 10',pStatus:'on-track'},{pid:'2026-CCDG-001',hrs:8, name:'Money App Campaign',        wsColor:'#00E400',dueDate:'Mar 28',pStatus:'on-track'}],
+  'KT':[{pid:'2026-RELS-004',hrs:12,name:'Q2 Release Assets',        wsColor:'#874FFF',dueDate:'Mar 14',pStatus:'delayed'},{pid:'2026-COPS-010',hrs:8, name:'Production SOP Update',     wsColor:'#B3B3B3',dueDate:'Feb 28',pStatus:'done'}],
+  'DF':[{pid:'2026-SLDG-003',hrs:18,name:'Spring Seller Push',       wsColor:'#888888',dueDate:'Mar 20',pStatus:'at-risk'},{pid:'2026-CWEB-005',hrs:12,name:'Homepage Redesign',          wsColor:'#14B4FF',dueDate:'Apr 30',pStatus:'on-track'}],
+  'BT':[{pid:'2026-RELS-004',hrs:14,name:'Q2 Release Assets',        wsColor:'#874FFF',dueDate:'Mar 14',pStatus:'delayed'}],
+  'LH':[{pid:'2026-CCSO-012',hrs:16,name:'Social Refresh Spring',    wsColor:'#00E400',dueDate:'Apr 10',pStatus:'on-track'},{pid:'2026-BRPT-006',hrs:10,name:'Fintech Summit Collab',    wsColor:'#CEFF00',dueDate:'May 10',pStatus:'at-risk'}],
+  'AO':[{pid:'2026-CCDG-001',hrs:10,name:'Money App Campaign',       wsColor:'#00E400',dueDate:'Mar 28',pStatus:'on-track'},{pid:'2026-BRPT-006',hrs:8, name:'Fintech Summit Collab',    wsColor:'#CEFF00',dueDate:'May 10',pStatus:'at-risk'}],
+  'MS':[{pid:'2026-CCSO-012',hrs:8, name:'Social Refresh Spring',    wsColor:'#00E400',dueDate:'Apr 10',pStatus:'on-track'}],
+};
+var CAPS=[
+  {id:'creative-lead',name:'Creative Lead',  icon:'fa-crown',        members:['AD','MC']},
+  {id:'design',       name:'Design',         icon:'fa-pen-ruler',    members:['JC','ST','NK','DP']},
+  {id:'motion-3d',    name:'3D & Motion',    icon:'fa-cube',         members:['MW','ZA','LP']},
+  {id:'strategy',     name:'Strategy',       icon:'fa-chess',        members:['PK','SR','CW']},
+  {id:'production',   name:'Production',     icon:'fa-clapperboard', members:['KT','DF','BT']},
+  {id:'writing',      name:'Writing',        icon:'fa-pen-nib',      members:['LH','AO','MS']},
+];
+var PROMPTS=[
+  {id:1, cat:'campaign',title:'Hero Campaign Concept',     preview:'Generate 3 distinct campaign territories for [product] targeting [audience].',impact:'strategic',timeSaved:'~3 hrs',usedBy:'Creative Leads, PMs',trend:'hot',
+   full:'Generate 3 distinct campaign territories for [product] targeting [audience].\n\nFor each territory:\n1. Core Insight — the human truth driving the idea\n2. Emotional Hook — the feeling it creates\n3. Visual Metaphor — the central image/concept\n4. Headline — the lead line\n5. Campaign name + tagline options (×3)',
+   tips:'Best for: kick-starting creative briefs, pitching to stakeholders, breaking creative block on new business.',tags:['Campaign','Ideation','Concepting'],
+   vis:{bg:'linear-gradient(135deg,#0d1640,#1e3a8a,#2563eb)',icon:'📣',cat:'Campaign'}},
+  {id:2, cat:'copy',    title:'Value Prop Reframe',         preview:'Reframe this product benefit for [audience]. Write 5 variations across different tones.',impact:'tactical',timeSaved:'~1 hr',usedBy:'Copywriters, Brand Team',trend:'popular',
+   full:'Reframe this product benefit for [audience]: "[feature or value prop]"\n\nWrite 5 distinct variations:\n1. Bold & provocative\n2. Emotionally resonant\n3. Functional & direct\n4. Playful & unexpected\n5. Premium & aspirational\n\nFor each: headline, 2-sentence body, CTA.',
+   tips:'Best for: refreshing stale messaging, A/B test copy, creative reviews.',tags:['Copy','Messaging','Tone'],
+   vis:{bg:'linear-gradient(135deg,#2d0845,#4c1d95,#7c3aed)',icon:'✍️',cat:'Copy'}},
+  {id:3, cat:'visual',  title:'Visual Direction Brief',     preview:'Create a visual direction brief for [campaign] with mood, palette, and photography style.',impact:'strategic',timeSaved:'~2 hrs',usedBy:'Art Directors, Creative Leads',trend:'popular',
+   full:'Create a visual direction brief for [campaign name].\n\nInclude:\n1. Mood & atmosphere — 3 adjectives + 1 sentence\n2. Color philosophy — emotional intent behind palette choices\n3. Typography personality — font character description\n4. Photography/illustration style — lighting, subject, composition\n5. Three reference directions — each with name, rationale, 5-word vibe\n6. What to avoid — 3 visual clichés to steer clear of',
+   tips:'Best for: aligning creative teams before production, briefing external vendors, establishing guardrails.',tags:['Visual','Art Direction','Direction'],
+   vis:{bg:'linear-gradient(135deg,#4a0a3a,#831843,#db2777)',icon:'🎨',cat:'Visual'}},
+  {id:4, cat:'strategy',title:'Competitive Whitespace Audit',preview:'Analyze how [brand] and [competitor] communicate [topic]. Identify whitespace opportunities.',impact:'strategic',timeSaved:'~3 hrs',usedBy:'Strategy Team, Creative Leads',trend:'hot',
+   full:'Analyze how [brand] and [competitor] communicate around [topic/category].\n\nOutput:\n1. How Brand A owns this space — key messages, tone, visual codes\n2. How Brand B owns this space — same breakdown\n3. Shared territory — where they overlap (avoid)\n4. Whitespace — 3 distinct opportunities Block can uniquely own\n5. Risks — what could backfire\n6. Recommended POV — our unique angle in 1 sentence',
+   tips:'Best for: new campaign planning, brand positioning workshops, responding to competitor moves.',tags:['Strategy','Research','Positioning'],
+   vis:{bg:'linear-gradient(135deg,#0a2a1a,#14532d,#16a34a)',icon:'♟️',cat:'Strategy'}},
+  {id:5, cat:'social',  title:'30-Day Content Matrix',      preview:'Build a 30-day content matrix for [product] on [platform] with themes and post concepts.',impact:'operational',timeSaved:'~2 hrs',usedBy:'Social Team, Content Strategists',trend:'popular',
+   full:'Build a 30-day content matrix for [product] on [platform].\n\nInclude:\n- Week-by-week themes (4 weeks)\n- Content type mix: % educational / entertainment / promotional / community\n- 5 example post concepts with hooks and visual direction\n- CTA strategy per post type\n- Optimal posting cadence + times\n- 3 evergreen formats to repeat monthly',
+   tips:'Best for: campaign planning, social launches, onboarding new social team members.',tags:['Social','Content','Planning'],
+   vis:{bg:'linear-gradient(135deg,#2a1a04,#78350f,#d97706)',icon:'#️⃣',cat:'Social'}},
+  {id:6, cat:'copywriting',title:'Launch Messaging Hierarchy', preview:'Write a full messaging hierarchy for [launch] from brand truth to tagline options.',impact:'strategic',timeSaved:'~2 hrs',usedBy:'PMs, Copywriters, Creative Leads',trend:'popular',
+   full:'Write a full messaging hierarchy for [product/campaign launch]:\n\n1. Brand Truth — the core belief (1 sentence)\n2. Key Differentiators — 3 distinct proof points\n3. Functional Benefits — what it does\n4. Emotional Benefits — how it makes people feel\n5. Customer Translation — how a real person describes it\n6. Tagline Options — 5 options ranging from rational to emotional',
+   tips:'Best for: product launches, integrated campaign briefs, aligning cross-functional teams.',tags:['Copy','Launch','Hierarchy'],
+   vis:{bg:'linear-gradient(135deg,#1e0a45,#5b21b6,#8b5cf6)',icon:'📐',cat:'Copy'}},
+  {id:7, cat:'campaign',title:'Campaign Naming Workshop',   preview:'Generate 10 campaign name options for [brief] with rationale and tone for each.',impact:'tactical',timeSaved:'~1.5 hrs',usedBy:'Creative Team, Strategists',trend:'new',
+   full:'Generate 10 campaign name options for [brief description].\n\nFor each name:\n- 1-line rationale (why it works)\n- Tone / personality\n- How it extends across touchpoints (OOH, digital, social)\n- Potential risk or concern\n\nFlag your top 3 with a brief explanation of why they rise above.',
+   tips:'Best for: naming sprints, presenting options to leadership, exploring creative territory.',tags:['Campaign','Naming','Ideation'],
+   vis:{bg:'linear-gradient(135deg,#0f1e45,#1e40af,#60a5fa)',icon:'🏷️',cat:'Campaign'}},
+  {id:8, cat:'visual',  title:'Art Direction Territories',  preview:'Develop 3 art direction territories for [project] with visual philosophy and type voice.',impact:'strategic',timeSaved:'~2 hrs',usedBy:'Art Directors, Designers',trend:'popular',
+   full:'Develop 3 distinct art direction territories for [project/campaign].\n\nFor each territory:\n1. Territory name\n2. Visual philosophy — the guiding aesthetic principle\n3. Color emotion — what feeling the palette communicates\n4. Typography voice — describe the type personality\n5. Photography / illustration direction\n6. Motion & animation character\n7. 5-word vibe (e.g. "bold, raw, human, electric, urgent")',
+   tips:'Best for: creative reviews, presenting options to clients, briefing photographers/illustrators.',tags:['Visual','Art Direction','Territories'],
+   vis:{bg:'linear-gradient(135deg,#3a0a2e,#6d1a5f,#c026d3)',icon:'🖌️',cat:'Visual'}},
+  {id:9, cat:'strategy',title:'Audience Insight Mining',    preview:'Uncover 5 latent tensions or desires your audience has with [category].',impact:'strategic',timeSaved:'~3 hrs',usedBy:'Strategy Team, Creative Directors',trend:'hot',
+   full:'For [audience segment], uncover 5 latent tensions or desires they have with [category/product].\n\nFor each tension:\n1. The tension — what internal conflict exists\n2. The underlying desire — what they actually want\n3. How the category currently fails them\n4. How Block can uniquely solve it\n5. The insight statement — 1 sentence suitable for a creative brief',
+   tips:'Best for: brief writing, campaign strategy development, audience-first concepting sessions.',tags:['Strategy','Insights','Audience'],
+   vis:{bg:'linear-gradient(135deg,#0a2a20,#065f46,#10b981)',icon:'🔍',cat:'Strategy'}},
+  {id:10,cat:'social',  title:'Trend Newsjack Framework',   preview:'Tap [trend] for [brand]. Generate 3 angles rated by brand risk and reward.',impact:'tactical',timeSaved:'~1 hr',usedBy:'Social Team, Brand Strategists',trend:'new',
+   full:'We want to tap into [trend] for [brand/product].\n\nGenerate 3 distinct angles:\n1. Brand-native — directly connected to our product story\n2. Culturally adjacent — related to the trend\'s broader context\n3. Unexpected — a surprising, counterintuitive take\n\nFor each: 2-sentence concept, Brand Risk (L/M/H), Brand Reward (L/M/H), suggested format, example post/caption.',
+   tips:'Best for: social team ideation, reactive content planning, trend analysis.',tags:['Social','Trends','Reactive'],
+   vis:{bg:'linear-gradient(135deg,#2a1a08,#92400e,#f59e0b)',icon:'⚡',cat:'Social'}},
+  {id:11,cat:'campaign',title:'Multichannel Activation',    preview:'Outline a full multichannel activation across OOH, social, CRM, in-app, and PR.',impact:'strategic',timeSaved:'~4 hrs',usedBy:'PMs, Creative Leads, Media Team',trend:'hot',
+   full:'Outline a full multichannel activation plan for [campaign].\n\nFor each channel — OOH, Paid Social, Influencer, CRM/Email, In-App, PR:\n1. Channel role — what job it does in the campaign\n2. Key message — the specific message for this channel\n3. Format recommendations — 2-3 specific formats\n4. KPIs — how success is measured\n5. Timing — where it falls in the campaign arc\n6. Budget priority — High / Medium / Low',
+   tips:'Best for: integrated campaign planning, budget allocation discussions, media briefs.',tags:['Campaign','Multichannel','Planning'],
+   vis:{bg:'linear-gradient(135deg,#0d2040,#1e4080,#3b82f6)',icon:'📡',cat:'Campaign'}},
+  {id:12,cat:'copywriting',title:'Brand Voice Audit',         preview:'Score existing copy against brand voice pillars and rewrite with specific edits.',impact:'operational',timeSaved:'~1.5 hrs',usedBy:'Copywriters, Creative Directors',trend:'popular',
+   full:'Review this copy: "[paste copy here]"\n\nScore it (1–5) against our brand voice pillars:\n- Bold: does it take a clear POV?\n- Human: does it sound like a real person?\n- Clear: is it direct and jargon-free?\n- Surprising: is there an unexpected twist?\n\nRewrite it with specific improvements. For each change: what you changed, why it\'s stronger, which pillar it improves.\n\nFinish with an overall before/after score comparison.',
+   tips:'Best for: copy reviews, onboarding new writers, establishing voice consistency across teams.',tags:['Copy','Brand Voice','Audit'],
+   vis:{bg:'linear-gradient(135deg,#1a0a30,#3b1060,#9333ea)',icon:'🔊',cat:'Copy'}},
+  // Wevi Workflows
+  {id:13,cat:'wevi',title:'Content Production Pipeline',    preview:'Automate a full creative content pipeline from brief intake to final delivery approval.',impact:'strategic',timeSaved:'~8 hrs',usedBy:'Creative Ops, All Leads',trend:'hot',
+   full:'Build a Wevi workflow for [content type] production:\n\n1. Trigger: Brief form submitted → notify Creative Lead\n2. Auto-create project folder structure in Google Drive\n3. Assign team based on content type + capacity data\n4. Status gates: Brief → Concept → Production → Review → Final\n5. Automated Slack notifications at each gate change\n6. Final delivery checklist auto-populated from project type\n7. Archive and tagging on completion\n\nIncludes: error handling, SLA alerts, conditional routing.',
+   tips:'Best for: high-volume content teams, reducing manual project setup, enforcing consistent delivery standards.',tags:['Wevi','Automation','Workflow'],
+   vis:{bg:'linear-gradient(135deg,#0a1a2a,#0f3460,#e94560)',icon:'⚡',cat:'Wevi'}},
+  {id:14,cat:'wevi',title:'Asset Approval Automation',      preview:'Automate review rounds, feedback consolidation, and final approval routing in one workflow.',impact:'operational',timeSaved:'~4 hrs',usedBy:'Design Team, Creative Ops',trend:'popular',
+   full:'Design a Wevi approval workflow for [asset type]:\n\n1. Designer uploads to shared review link\n2. Auto-notify reviewers with deadline + context\n3. Consolidate feedback via structured form (not email)\n4. Route revisions back to designer with priority flags\n5. CD approval gate — conditional on all reviewer sign-offs\n6. Auto-generate delivery package on final approval\n7. Notify stakeholders + update project tracker\n\nIncludes: reminder logic, version control, audit trail.',
+   tips:'Best for: eliminating feedback chaos, reducing revision cycles, creating accountability in review process.',tags:['Wevi','Approval','Feedback'],
+   vis:{bg:'linear-gradient(135deg,#0a2a1a,#14532d,#22c55e)',icon:'✅',cat:'Wevi'}},
+  // Image Creation
+  {id:15,cat:'image',title:'MidJourney Campaign Prompts',   preview:'Generate structured MidJourney prompts for [campaign] with style, mood, and technical specs.',impact:'tactical',timeSaved:'~1.5 hrs',usedBy:'Designers, Art Directors',trend:'popular',
+   full:'Generate 5 MidJourney image prompts for [campaign/brief].\n\nFor each prompt include:\n- Subject: what is in the scene\n- Style: artistic reference (e.g., hyperrealistic, editorial, flat graphic)\n- Mood: lighting + emotional tone\n- Color palette: dominant hues\n- Camera/composition: angle, framing, lens\n- Technical params: --ar 16:9, --v 6, --style raw, --q 2\n\nAlso output: a negative prompt to exclude unwanted elements.',
+   tips:'Best for: rapid visual ideation, briefing photographers, creating mood boards, client presentations.',tags:['Image','MidJourney','AI Art'],
+   vis:{bg:'linear-gradient(135deg,#1a0030,#3a0060,#7c00ff)',icon:'🎨',cat:'Image'}},
+  // Video Creation
+  {id:16,cat:'video',title:'Sora Video Brief Generator',    preview:'Write a detailed Sora/video AI prompt for [campaign spot] with scene direction and pacing.',impact:'tactical',timeSaved:'~2 hrs',usedBy:'Motion Designers, Video Team',trend:'new',
+   full:'Create a Sora-optimized video brief for [campaign/concept]:\n\n1. Concept logline (1 sentence)\n2. Scene breakdown (3-5 shots):\n   - Shot description (subject, action, environment)\n   - Camera movement (dolly, handheld, overhead)\n   - Duration (seconds)\n   - Mood + lighting\n3. Overall visual style: cinematic language reference\n4. Pacing: slow burn / energetic / rhythmic\n5. Sound design notes (not generated but for editor)\n6. Output format: 1:1, 16:9, 9:16 + resolution\n\nInclude: transition style between shots, color grade reference.',
+   tips:'Best for: social video concepting, storyboard shortcutting, pitching video treatments quickly.',tags:['Video','Sora','AI Video'],
+   vis:{bg:'linear-gradient(135deg,#1a0a0a,#450a0a,#dc2626)',icon:'🎬',cat:'Video'}},
+];
+var INSPO=[
+  {title:'MidJourney: Brand Textures', thumb:'🎨',meta:'Image Creation · Mar 7',   bg:'linear-gradient(135deg,#1a0030,#3a0060,#7c00ff)'},
+  {title:'Sora: Product Launch Spot',  thumb:'🎬',meta:'Video Creation · Mar 6',   bg:'linear-gradient(135deg,#1a0a0a,#450a0a,#dc2626)'},
+  {title:'Wevi: Approval Pipeline',    thumb:'⚡',meta:'Automation · Mar 5',       bg:'linear-gradient(135deg,#0a1a2a,#0f3460,#e94560)'},
+  {title:'Adobe Firefly: Color Studies',thumb:'🌈',meta:'Image · Mar 5',           bg:'linear-gradient(135deg,#0a1030,#1e3a8a,#06b6d4)'},
+  {title:'Runway ML: Motion Loops',    thumb:'🔄',meta:'Motion · Mar 4',           bg:'linear-gradient(135deg,#0a2a1a,#14532d,#22c55e)'},
+  {title:'Claude: Campaign Strategy',  thumb:'♟️',meta:'Strategy · Mar 4',        bg:'linear-gradient(135deg,#1a1a2e,#2d1b5e,#5b21b6)'},
+  {title:'DALL·E: OOH Concepts',       thumb:'🏙️',meta:'Campaign · Mar 3',        bg:'linear-gradient(135deg,#2a1a04,#78350f,#d97706)'},
+  {title:'ElevenLabs: VO Scripts',     thumb:'🎙️',meta:'Audio · Mar 2',           bg:'linear-gradient(135deg,#1a2a2a,#164e63,#0e7490)'},
+];
+var TOOLS=[
+  {name:'Brand Figma Library',      icon:'🎨',cat:'design',    desc:'Master component library + brand assets — Block Brand Standards Q2 2026', url:'#'},
+  {name:'Brief Templates',          icon:'📝',cat:'strategy',  desc:'Creative brief templates for all workstreams — Campaign, Social, Web, Video', url:'#'},
+  {name:'OOO + Sprint Calendar',    icon:'📅',cat:'ops',       desc:'Team out-of-office schedule + sprint milestones Q1/Q2 2026', url:'#'},
+  {name:'Production Playbook',      icon:'📋',cat:'production',desc:'End-to-end production process guide — naming, delivery, handoff specs', url:'#'},
+  {name:'Asset Delivery Guide',     icon:'📦',cat:'production',desc:'File formats, naming conventions, and handoff specs by deliverable type', url:'#'},
+  {name:'Brand Guidelines',         icon:'✦', cat:'design',    desc:'Typography, color, logo usage — complete Block Brand Standards documentation', url:'#'},
+  {name:'Wevi Workflows Hub',       icon:'⚡',cat:'wevi',      desc:'Saved automation workflows for creative ops, approvals, and content pipelines', url:'#'},
+  {name:'Stock + AI Image Library', icon:'🖼️',cat:'image',     desc:'Approved stock photography + AI-generated image repository with licensing info', url:'#'},
+  {name:'Video Script Templates',   icon:'🎬',cat:'video',     desc:'Scripts, storyboard templates, and Sora briefs for video production', url:'#'},
+  {name:'Vendor + Partner Directory',icon:'🤝',cat:'ops',      desc:'Approved vendors, freelancers, and agency partners with rates and contacts', url:'#'},
+  {name:'Creative Review Process',  icon:'🔍',cat:'ops',       desc:'Feedback workflow + approval stages by project type — who approves what', url:'#'},
+  {name:'Q2 Sprint Calendar',       icon:'🗓️',cat:'ops',       desc:'All reviews, deadlines, and planning milestones for Q2 2026', url:'#'},
+];
+var RESOURCE_LINKS=[
+  // Design & Creative
+  {name:'Figma',              sub:'Design Tool',   cat:'Design & Creative',   icon:'🎨',color:'#1ABCFE',desc:'Brand component library, UI kits, design assets, and shared team files.',tag:'Design',url:'https://figma.com',access:'open',lastUpdated:'Mar 7',quickActions:['Open Library','View Components'],startHere:true},
+  {name:'Adobe Creative Suite',sub:'Design Tool',  cat:'Design & Creative',   icon:'💎',color:'#FF0000',desc:'Photoshop, Illustrator, Premiere Pro, After Effects — full creative suite.',tag:'Design',url:'#',access:'request',lastUpdated:'Jan 15',quickActions:['Request License','View Seats']},
+  {name:'Frame.io',           sub:'Video Review',  cat:'Design & Creative',   icon:'🎬',color:'#63B3ED',desc:'Video review, frame-accurate feedback, and approval workflows for productions.',tag:'Video',url:'#',access:'open',lastUpdated:'Feb 28',quickActions:['Open Review','Upload Assets']},
+  {name:'Canva',              sub:'Quick Assets',  cat:'Design & Creative',   icon:'✏️',color:'#00C4CC',desc:'Rapid social content, decks, and templates for non-designers.',tag:'Design',url:'#',access:'open',lastUpdated:'Mar 1',quickActions:['Open Canva','Browse Templates']},
+  // AI Tools
+  {name:'Wevi',               sub:'Automation',    cat:'AI Tools',            icon:'⚡',color:'#e94560',desc:'Workflow automation, creative pipelines, approval routing, and content ops.',tag:'Wevi',url:'#',access:'open',lastUpdated:'Mar 5',quickActions:['Open Wevi','View Workflows'],startHere:true},
+  {name:'MidJourney',         sub:'Image Gen',     cat:'AI Tools',            icon:'🖼️',color:'#7c3aed',desc:'AI image generation for concept art, moodboards, campaign visuals, and references.',tag:'AI Art',url:'#',access:'request',lastUpdated:'Feb 20',quickActions:['Request Access','View Gallery']},
+  {name:'Runway ML',          sub:'Video Gen',     cat:'AI Tools',            icon:'🎞️',color:'#10b981',desc:'AI video generation, motion design, and visual effects for campaigns.',tag:'AI Video',url:'#',access:'limited',lastUpdated:'Mar 2',quickActions:['Open Runway','View Projects']},
+  {name:'Claude',             sub:'AI Assistant',  cat:'AI Tools',            icon:'🤖',color:'#00D632',desc:'Strategy, copy, campaign ideation, brief writing, and creative direction at scale.',tag:'Strategy',url:'#',access:'open',lastUpdated:'Mar 7',quickActions:['Open Claude','AI Studio'],startHere:true},
+  {name:'ElevenLabs',         sub:'Audio AI',      cat:'AI Tools',            icon:'🎙️',color:'#f59e0b',desc:'AI voice generation for video narration, social audio, and audio assets.',tag:'Audio',url:'#',access:'limited',lastUpdated:'Feb 14',quickActions:['Open ElevenLabs','Request Seat']},
+  {name:'Adobe Firefly',      sub:'Image Gen',     cat:'AI Tools',            icon:'🔥',color:'#FF5733',desc:'Adobe-native generative AI for image creation, retouch, and text effects.',tag:'AI Art',url:'#',access:'open',lastUpdated:'Mar 1',quickActions:['Open Firefly','Browse Presets']},
+  // File Management
+  {name:'Google Drive',       sub:'File Storage',  cat:'File Management',     icon:'📁',color:'#34A853',desc:'Primary shared drive for all project files, briefs, deliverables, and assets.',tag:'Storage',url:'https://drive.google.com',access:'open',lastUpdated:'Mar 7',quickActions:['Open Drive','Project Folder'],startHere:true},
+  {name:'Google Slides',      sub:'Presentations', cat:'File Management',     icon:'📑',color:'#FBBC04',desc:'Campaign decks, client presentations, internal reviews, and pitch templates.',tag:'Docs',url:'#',access:'open',lastUpdated:'Mar 3',quickActions:['New Deck','Browse Templates']},
+  {name:'Dropbox',            sub:'File Sharing',  cat:'File Management',     icon:'📦',color:'#0061FF',desc:'Large file storage and external partner, vendor, and client sharing.',tag:'Storage',url:'#',access:'request',lastUpdated:'Feb 10',quickActions:['Request Access','View Shared']},
+  // Collaboration
+  {name:'Slack',              sub:'Messaging',     cat:'Collaboration',       icon:'💬',color:'#611f69',desc:'Team communication — #creative, #brand-ops, #launches, #design-reviews.',tag:'Comms',url:'#',access:'open',lastUpdated:'Mar 7',quickActions:['Open Slack','#creative'],startHere:true},
+  {name:'Notion',             sub:'Documentation', cat:'Collaboration',       icon:'📋',color:'#e8e8f4',desc:'Team wikis, brand playbooks, SOPs, and meeting notes all in one place.',tag:'Docs',url:'#',access:'open',lastUpdated:'Mar 6',quickActions:['Open Notion','Brand Playbook']},
+  {name:'Miro',               sub:'Whiteboard',    cat:'Collaboration',       icon:'🗺️',color:'#FFD02F',desc:'Creative workshops, journey mapping, brainstorming, and campaign planning boards.',tag:'Workshop',url:'#',access:'open',lastUpdated:'Feb 28',quickActions:['Open Miro','Q2 Board']},
+  {name:'Loom',               sub:'Async Video',   cat:'Collaboration',       icon:'📹',color:'#625DF5',desc:'Record walkthroughs, feedback, and project updates asynchronously.',tag:'Video',url:'#',access:'open',lastUpdated:'Mar 4',quickActions:['Record New','View Library']},
+  // Project Management
+  {name:'Airtable',           sub:'Project Tracker',cat:'Project Management', icon:'📊',color:'#2D7FF9',desc:'Project intake, resource tracking, campaign calendars, and team dashboards.',tag:'PM',url:'#',access:'open',lastUpdated:'Mar 7',quickActions:['Open Airtable','Creative Tracker'],startHere:true},
+  {name:'Linear',             sub:'Sprint Tracker', cat:'Project Management', icon:'⬡',color:'#5E6AD2',desc:'Sprint planning and issue tracking for design technology and web projects.',tag:'Dev',url:'#',access:'request',lastUpdated:'Mar 5',quickActions:['Request Access','View Sprints']},
+  {name:'Google Calendar',    sub:'Scheduling',    cat:'Project Management',  icon:'🗓️',color:'#34A853',desc:'Team scheduling, OOO tracking, shoot days, and review session coordination.',tag:'Calendar',url:'#',access:'open',lastUpdated:'Mar 7',quickActions:['Open Calendar','Team OOO']},
+];
+var HUB_CATS=['Design & Creative','AI Tools','File Management','Collaboration','Project Management'];
+var WEVI_SVG='<svg width="260" height="86" viewBox="0 0 260 86" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%"><line x1="38" y1="28" x2="92" y2="54" stroke="rgba(233,69,96,.5)" stroke-width="1.2"/><line x1="92" y1="54" x2="152" y2="22" stroke="rgba(233,69,96,.4)" stroke-width="1.2"/><line x1="152" y1="22" x2="215" y2="58" stroke="rgba(233,69,96,.45)" stroke-width="1.2"/><line x1="92" y1="54" x2="148" y2="72" stroke="rgba(255,255,255,.12)" stroke-width="1"/><line x1="152" y1="22" x2="148" y2="72" stroke="rgba(255,255,255,.1)" stroke-width="1"/><line x1="215" y1="58" x2="240" y2="38" stroke="rgba(233,69,96,.3)" stroke-width="1"/><line x1="38" y1="28" x2="20" y2="55" stroke="rgba(255,255,255,.1)" stroke-width="1"/><circle cx="38" cy="28" r="5" fill="#e94560" opacity=".9"/><circle cx="92" cy="54" r="8" fill="#e94560" opacity=".75" stroke="#e94560" stroke-width="2" stroke-opacity=".3"/><circle cx="152" cy="22" r="6" fill="white" opacity=".25"/><circle cx="215" cy="58" r="5" fill="#e94560" opacity=".85"/><circle cx="148" cy="72" r="4" fill="white" opacity=".18"/><circle cx="240" cy="38" r="3" fill="rgba(233,69,96,.5)"/><circle cx="20" cy="55" r="3" fill="rgba(255,255,255,.2)"/><circle cx="175" cy="42" r="2.5" fill="rgba(233,69,96,.4)"/></svg>';
+// UTILS
+function esc(s){var d=document.createElement('div');d.textContent=String(s);return d.innerHTML}
+function rgb(h){if(!h||h.length<7)return'128,128,128';return parseInt(h.slice(1,3),16)+','+parseInt(h.slice(3,5),16)+','+parseInt(h.slice(5,7),16)}
+function wsc(c){return c==='#CEFF00'?'rgba(206,255,0,.85)':c}
+function getM(i){return TEAM.find(function(x){return x.initials===i})||null}
+function allocHrs(i){return(ALLOC[i]||[]).filter(function(a){return a.pStatus!=='done'}).reduce(function(s,a){return s+a.hrs},0)}
+function showToast(msg,color){var t=document.getElementById('toast');t.textContent=msg;t.style.background=color||'#10b981';t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2400)}
+function pill(ps){
+  var m={'on-track':['fa-circle-check','pill-on-track','On Track'],'at-risk':['fa-triangle-exclamation','pill-at-risk','At Risk'],
+    'delayed':['fa-circle-xmark','pill-delayed','Delayed'],'done':['fa-check','pill-done','Done'],
+    'briefing':['fa-circle-dot','pill-briefing','Briefing'],'active':['fa-play','pill-active','In Progress'],'review':['fa-eye','pill-review','In Review']};
+  var c=m[ps]||m['on-track'];
+  return '<span class="status-pill '+c[1]+'"><i class="fa-solid '+c[0]+'" style="font-size:9px"></i>'+c[2]+'</span>';
+}
+// TABS
+document.querySelectorAll('.nav-tab').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('.nav-tab').forEach(function(b){b.classList.remove('active')});document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active')});this.classList.add('active');document.getElementById('tab-'+this.dataset.tab).classList.add('active')})});
+function switchTab(n){document.querySelectorAll('.nav-tab').forEach(function(b){b.classList.remove('active')});document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active')});var b=document.querySelector('.nav-tab[data-tab="'+n+'"]');if(b)b.classList.add('active');document.getElementById('tab-'+n).classList.add('active')}
+// DASHBOARD — CREATIVE LEAD
+function renderDashboard(){
+  var active=PROJECTS.filter(function(p){return p.status!=='done'}).length;
+  var done=PROJECTS.filter(function(p){return p.status==='done'}).length;
+  var delayed=PROJECTS.filter(function(p){return p.pStatus==='delayed'}).length;
+  var atRisk=PROJECTS.filter(function(p){return p.pStatus==='at-risk'}).length;
+  var oooNow=TEAM.filter(function(m){return m.ooo}).length;
+  var h='';
+  // Greeting + stats
+  h+='<div class="dash-greeting">';
+  h+='<div class="dash-greet-left"><div class="dash-greet-name">Good morning, Jack,</div><div class="dash-greet-sub">Creative Director · Block Brand · Mar 7, 2026</div><button class="dash-rc-link" style="margin-top:8px;width:fit-content" onclick="switchTab(\'hub\')"><i class="fa-solid fa-compass"></i> Resource Center <i class="fa-solid fa-arrow-right" style="font-size:10px"></i></button></div>';
+  h+='<div style="display:flex;gap:8px">';
+  h+='<div style="text-align:center;padding:8px 16px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.18);border-radius:8px"><div style="font-size:20px;font-weight:800;color:#f87171">'+delayed+'</div><div style="font-size:10px;color:var(--text2)">Delayed</div></div>';
+  h+='<div style="text-align:center;padding:8px 16px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.18);border-radius:8px"><div style="font-size:20px;font-weight:800;color:#fbbf24">'+atRisk+'</div><div style="font-size:10px;color:var(--text2)">At Risk</div></div>';
+  h+='<div style="text-align:center;padding:8px 16px;background:rgba(0,214,50,.08);border:1px solid rgba(0,214,50,.18);border-radius:8px"><div style="font-size:20px;font-weight:800;color:var(--accent2)">'+active+'</div><div style="font-size:10px;color:var(--text2)">Active</div></div>';
+  h+='<div style="text-align:center;padding:8px 16px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.18);border-radius:8px"><div style="font-size:20px;font-weight:800;color:#34d399">'+done+'</div><div style="font-size:10px;color:var(--text2)">Done</div></div>';
+  h+='</div></div>';
+  // 1. WORKSTREAMS — full width at top
+  h+='<div><div class="section-header"><div class="section-title"><i class="fa-solid fa-layer-group"></i> Workstreams</div><div class="section-action" onclick="switchTab(\'projects\')">View all projects <i class="fa-solid fa-arrow-right"></i></div></div>';
+  h+='<div class="ws-filter-bar" style="margin-bottom:12px"><span style="font-size:11px;color:var(--text3);margin-right:2px">Jump to:</span>';
+  h+='<button class="ws-filter-pill" onclick="jumpToWs(\'all\')"><i class="fa-solid fa-layer-group" style="font-size:9px"></i> All</button>';
+  WS.forEach(function(w){var dC=wsc(w.color);h+='<button class="ws-filter-pill" style="border-color:rgba('+rgb(w.color)+',.4)" onclick="jumpToWs(\''+esc(w.name).replace(/'/g,"\\'")+'\')" ><span style="width:6px;height:6px;border-radius:50%;background:'+dC+';display:inline-block;flex-shrink:0"></span>'+esc(w.name)+'</button>';});
+  h+='</div>';
+  h+='<div class="ws-grid">';
+  WS.forEach(function(w){
+    var wP=PROJECTS.filter(function(p){return p.ws===w.name}),wA=wP.filter(function(p){return p.status==='active'}).length,wD=wP.filter(function(p){return p.pStatus==='delayed'}).length,dC=wsc(w.color);
+    h+='<div class="ws-card" onclick="switchTab(\'projects\')"><div class="ws-card-top"><span class="ws-dot" style="background:'+dC+'"></span><span class="ws-name">'+esc(w.name)+'</span>'+(wD>0?'<i class="fa-solid fa-triangle-exclamation" style="font-size:10px;color:#f87171"></i>':'')+'</div>';
+    h+='<div class="ws-count">'+wP.length+' project'+(wP.length!==1?'s':'')+' · '+wA+' active</div><div class="ws-bar"><div class="ws-bar-fill" style="width:'+(wP.length?Math.round(wA/wP.length*100):0)+'%;background:'+dC+'"></div></div></div>';
+  });
+  h+='</div></div>';
+  // 2. TEAM PULSE — full width below workstreams
+  h+='<div class="panel"><div class="section-header"><div class="section-title"><i class="fa-solid fa-heart-pulse"></i> Team Pulse</div>';
+  if(oooNow>0)h+='<span style="font-size:11px;color:#a78bfa;display:flex;align-items:center;gap:4px;margin-left:auto;margin-right:12px"><i class="fa-solid fa-plane-departure" style="font-size:10px"></i>'+oooNow+' team members OOO</span>';
+  h+='<div class="section-action" onclick="switchTab(\'resources\')">Full view <i class="fa-solid fa-arrow-right"></i></div></div>';
+  h+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px">';
+  TEAM.forEach(function(m){
+    var c=m.capacity,totalH=allocHrs(m.initials);
+    var bC=c>=100?'#f87171':c>=86?'#fb923c':c>=61?'#fbbf24':'#34d399';
+    var isOver=totalH>m.weeklyCapHrs,overBy=totalH-m.weeklyCapHrs;
+    h+='<div class="pulse-row'+(isOver?' pulse-over':'')+'">';
+    h+='<div class="pulse-av-wrap">';
+    if(m.img)h+='<img src="'+m.img+'" class="pulse-av" alt="'+esc(m.name)+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">';
+    h+='<div class="pulse-av-placeholder" style="background:rgba('+rgb(m.color)+',.15);color:'+m.color+';'+(m.img?'display:none':'')+'">'+m.initials+'</div>';
+    if(m.ooo)h+='<div class="pulse-ooo-dot" title="OOO '+esc(m.ooo.start)+'–'+esc(m.ooo.end)+'"></div>';
+    h+='</div><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap"><span style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(m.name)+'</span>';
+    if(isOver)h+='<span class="pulse-over-badge"><i class="fa-solid fa-triangle-exclamation" style="font-size:8px"></i>+'+overBy+'h</span>';
+    if(m.ooo)h+='<span class="ooo-flag-sm"><i class="fa-solid fa-plane-departure" style="font-size:8px"></i>'+esc(m.ooo.start)+'</span>';
+    h+='</div><div style="height:3px;border-radius:2px;background:var(--border);margin-top:4px"><div style="height:100%;width:'+c+'%;background:'+bC+';border-radius:2px"></div></div></div>';
+    h+='<span style="font-size:11px;font-weight:700;color:'+bC+';width:30px;text-align:right;flex-shrink:0">'+c+'%</span></div>';
+  });
+  h+='</div></div>';
+  // 3. PRESSING PRIORITIES + UPCOMING DEADLINES — at bottom
+  var priority=PROJECTS.filter(function(p){return p.pStatus==='delayed'||p.pStatus==='at-risk'}).sort(function(a,b){return a.pStatus==='delayed'?-1:1});
+  h+='<div class="dash-center-row">';
+  // Pressing Priorities
+  h+='<div class="panel"><div class="section-header"><div class="section-title"><i class="fa-solid fa-triangle-exclamation" style="color:#f87171"></i> Pressing Priorities</div><div class="section-action" onclick="switchTab(\'projects\')">All <i class="fa-solid fa-arrow-right"></i></div></div>';
+  if(!priority.length){h+='<div style="color:var(--text3);font-size:12px;padding:8px 0"><i class="fa-solid fa-check" style="color:#34d399;margin-right:6px"></i>No blockers — all clear!</div>';}
+  else{
+    var maxShow=3,extra=priority.length-maxShow;
+    priority.slice(0,maxShow).forEach(function(p){
+      h+='<div class="priority-card pcard-'+p.pStatus+'" onclick="switchTab(\'projects\')">';
+      h+='<div class="pcard-top">'+pill(p.pStatus)+'<span class="pcard-name">'+esc(p.name)+'</span></div>';
+      h+='<div class="pcard-note">'+esc(p.statusNote||'')+'</div>';
+      h+='<div class="pcard-meta"><span style="font-size:10px;color:var(--text3)"><i class="fa-regular fa-calendar" style="margin-right:3px"></i>'+esc(p.dueDate)+'</span>';
+      var lead=getM(p.lead);if(lead)h+='<span style="font-size:10px;color:var(--text3)"><i class="fa-solid fa-user" style="margin-right:3px"></i>'+esc(lead.name)+'</span>';
+      h+='</div></div>';
+    });
+    if(extra>0){
+      h+='<div id="dashPriorityExtra" style="display:none">';
+      priority.slice(maxShow).forEach(function(p){
+        h+='<div class="priority-card pcard-'+p.pStatus+'" onclick="switchTab(\'projects\')">';
+        h+='<div class="pcard-top">'+pill(p.pStatus)+'<span class="pcard-name">'+esc(p.name)+'</span></div>';
+        h+='<div class="pcard-note">'+esc(p.statusNote||'')+'</div>';
+        h+='<div class="pcard-meta"><span style="font-size:10px;color:var(--text3)"><i class="fa-regular fa-calendar" style="margin-right:3px"></i>'+esc(p.dueDate)+'</span>';
+        var lead2=getM(p.lead);if(lead2)h+='<span style="font-size:10px;color:var(--text3)"><i class="fa-solid fa-user" style="margin-right:3px"></i>'+esc(lead2.name)+'</span>';
+        h+='</div></div>';
+      });
+      h+='</div>';
+      h+='<button onclick="var el=document.getElementById(\'dashPriorityExtra\'),btn=this;el.style.display=el.style.display===\'none\'?\'block\':\'none\';btn.textContent=el.style.display===\'none\'?\'Show '+extra+' more…\':\'Show less\'" style="width:100%;margin-top:6px;padding:6px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text3);font-size:11px;cursor:pointer;transition:all .2s" onmouseover="this.style.background=\'var(--hover)\'" onmouseout="this.style.background=\'transparent\'">Show '+extra+' more…</button>';
+    }
+  }
+  h+='</div>';
+  // Upcoming Deadlines
+  h+='<div class="panel"><div class="section-header"><div class="section-title"><i class="fa-solid fa-calendar-check"></i> Upcoming Deadlines</div></div>';
+  var urgD=['Mar 12','Mar 14'],soonD=['Mar 20','Mar 28'];
+  PROJECTS.filter(function(p){return p.status!=='done'}).sort(function(a,b){return projectSortKey(a,'due')-projectSortKey(b,'due')}).slice(0,6).forEach(function(p){
+    var cls=urgD.indexOf(p.dueDate)>-1?'urgent':soonD.indexOf(p.dueDate)>-1?'soon':'normal';
+    h+='<div class="deadline-item"><span class="deadline-ws-dot" style="background:'+wsc(p.wsColor)+'"></span><div class="deadline-body"><div class="deadline-name">'+esc(p.name)+'</div><div class="deadline-project">'+esc(p.ws)+' '+pill(p.pStatus)+'</div></div><span class="deadline-date '+cls+'">'+esc(p.dueDate)+'</span></div>';
+  });
+  h+='</div>';
+  h+='</div>';
+  document.getElementById('tab-dashboard').innerHTML=h;
+}
+// PROJECTS — SQUARE CARD GRID
+var projFilter='all',wsGroupState={},projSort='ws';
+function renderProjRow(p){
+  var dC2=wsc(p.wsColor),lead=getM(p.lead);
+  var urgD=['Mar 12','Mar 14'],soonD=['Mar 16','Mar 20','Mar 28'];
+  var dueCls=urgD.indexOf(p.dueDate)>-1?'urgent':soonD.indexOf(p.dueDate)>-1?'soon':'normal';
+  var h='<div class="proj-row row-'+p.pStatus+'" data-id="'+esc(p.id)+'">';
+  h+='<div class="proj-row-top">'+(p.pStatus==='delayed'?'<i class="fa-solid fa-circle-exclamation proj-alert-icon"></i>':'')+pill(p.pStatus)+'<span class="proj-name">'+esc(p.name)+'</span>';
+  if(p.startDate)h+='<span style="font-size:10px;color:var(--text3);flex-shrink:0"><i class="fa-solid fa-rocket" style="font-size:9px;margin-right:2px"></i>'+esc(p.startDate)+'</span>';
+  h+='<span class="proj-due '+dueCls+'"><i class="fa-regular fa-calendar" style="font-size:9px"></i> '+esc(p.dueDate)+'</span></div>';
+  h+='<div class="proj-row-meta"><span class="proj-code">'+esc(p.id)+'</span>';
+  if(lead)h+='<span class="proj-lead"><div class="proj-lead-av" style="background:rgba('+rgb(lead.color)+',.2);color:'+lead.color+'">'+lead.initials+'</div>'+esc(lead.name)+'</span>';
+  p.tags.forEach(function(t){h+='<span class="proj-tag-sm">'+esc(t)+'</span>'});
+  h+='</div>';
+  // Team strip
+  if(p.team&&p.team.length>0){
+    h+='<div class="proj-team-strip">';
+    var shown=p.team.slice(0,5);
+    shown.forEach(function(ini){var tm=getM(ini);if(!tm)return;h+='<div class="pt-av" style="background:rgba('+rgb(tm.color)+',.18);color:'+tm.color+'" title="'+esc(tm.name)+'">'+tm.initials+'</div>'});
+    if(p.team.length>5)h+='<span class="pt-more">+'+( p.team.length-5)+'</span>';
+    h+='</div>';
+  }
+  if(p.status!=='done')h+='<div class="proj-prog-row"><div class="proj-prog-bar"><div class="proj-prog-fill" style="width:'+p.progress+'%;background:'+dC2+'"></div></div><span class="proj-prog-pct">'+p.progress+'%</span></div>';
+  // Milestones bullet list
+  if(p.milestones&&p.milestones.length>0){
+    h+='<div class="proj-milestones">';
+    p.milestones.forEach(function(ms){
+      var msC=ms.urg==='urgent'?'#f87171':ms.urg==='soon'?'#fbbf24':'#34d399';
+      h+='<div class="ms-bullet"><span class="ms-bullet-dot" style="background:'+msC+'"></span><span class="ms-bullet-name">'+esc(ms.name)+'</span><span class="ms-bullet-date" style="color:'+msC+'">'+esc(ms.date)+'</span></div>';
+    });
+    h+='</div>';
+  }
+  h+='</div>';
+  return h;
+}
+var MONTH_ORDER={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+function projectSortKey(p,field){var d=(field==='launch'?p.startDate:p.dueDate)||'';var parts=d.trim().split(' ');return(MONTH_ORDER[parts[0]]||99)*100+(parseInt(parts[1])||0);}
+function renderProjCard(p){
+  var dC=wsc(p.wsColor);
+  var urgD=['Mar 12','Mar 14'],soonD=['Mar 16','Mar 20','Mar 28'];
+  var dueCls=urgD.indexOf(p.dueDate)>-1?'urgent':soonD.indexOf(p.dueDate)>-1?'soon':'normal';
+  var h='<div class="proj-card card-'+p.pStatus+'" data-id="'+esc(p.id)+'">';
+  h+='<div class="pc-top-bar" style="background:'+dC+'"></div>';
+  h+='<div class="pc-header"><div class="pc-ws"><span class="pc-ws-dot" style="background:'+dC+'"></span>'+esc(p.ws)+'</div>'+pill(p.pStatus)+'</div>';
+  h+='<div class="pc-body"><div class="pc-name">'+esc(p.name)+'</div>';
+  if(p.statusNote)h+='<div class="pc-status-note">'+esc(p.statusNote)+'</div>';
+  // Team + allocations
+  if((p.team||[]).length>0){
+    h+='<div class="pc-team-allocs"><div class="pc-alloc-label">Team &amp; Allocations</div>';
+    (p.team||[]).forEach(function(ini){
+      var tm=getM(ini);if(!tm)return;
+      var ma=(ALLOC[ini]||[]).find(function(a){return a.pid===p.id});
+      h+='<div class="pc-alloc-row"><div class="pc-alloc-av" style="background:rgba('+rgb(tm.color)+',.18);color:'+tm.color+'">'+tm.initials+'</div>';
+      h+='<span class="pc-alloc-name">'+esc(tm.name)+'</span>';
+      if(ma)h+='<span class="pc-alloc-hrs">'+ma.hrs+'h/wk</span>';
+      h+='</div>';
+    });
+    h+='</div>';
+  }
+  h+='</div>';
+  h+='<div class="pc-footer">';
+  h+='<div class="pc-date-range">';
+  h+='<span class="pc-date-start"><i class="fa-solid fa-play" style="font-size:6px;opacity:.6"></i>'+esc(p.startDate)+'</span>';
+  h+='<span class="pc-date-arrow">───</span>';
+  h+='<span class="pc-date-end pc-due '+dueCls+'"><i class="fa-solid fa-flag" style="font-size:7px"></i>'+esc(p.dueDate)+'</span>';
+  h+='</div>';
+  if(p.status!=='done'){h+='<div class="pc-prog-row"><div class="pc-prog"><div class="pc-prog-fill" style="width:'+p.progress+'%;background:'+dC+'"></div></div><span class="pc-prog-pct">'+p.progress+'%</span></div>';}
+  h+='<div class="pc-bottom-row"><div class="pc-team">';
+  (p.team||[]).slice(0,4).forEach(function(ini){var tm=getM(ini);if(!tm)return;h+='<div class="pc-av" style="background:rgba('+rgb(tm.color)+',.2);color:'+tm.color+'" title="'+esc(tm.name)+'">'+tm.initials+'</div>';});
+  if((p.team||[]).length>4)h+='<div class="pc-av" style="background:var(--surface2);color:var(--text3)">+'+(p.team.length-4)+'</div>';
+  h+='</div></div>';
+  h+='</div>';
+  h+='<div class="pc-overlay"><div class="pc-ov-links">';
+  h+='<a class="pc-ov-link" href="#" onclick="event.stopPropagation()"><i class="fa-solid fa-file-lines"></i> Brief</a>';
+  h+='<a class="pc-ov-link" href="#" onclick="event.stopPropagation()"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>';
+  h+='<a class="pc-ov-link" href="#" onclick="event.stopPropagation()"><i class="fa-brands fa-figma"></i> Figma</a>';
+  h+='</div></div>';
+  h+='</div>';
+  return h;
+}
+var wsOpenState={};
+function renderProjectList(){
+  var q=document.getElementById('projSearch').value.trim().toLowerCase();
+  var filtered=PROJECTS.filter(function(p){
+    if(projFilter!=='all'&&p.pStatus!==projFilter)return false;
+    if(q&&p.name.toLowerCase().indexOf(q)===-1&&p.id.toLowerCase().indexOf(q)===-1)return false;
+    return true;
+  });
+  // Sort within groups or globally
+  if(projSort==='launch'||projSort==='due'){
+    filtered=filtered.slice().sort(function(a,b){return projectSortKey(a,projSort)-projectSortKey(b,projSort)});
+  }
+  var h='<div style="padding:20px 22px">';
+  if(!filtered.length){
+    h+='<div style="text-align:center;padding:48px;color:var(--text2)"><i class="fa-solid fa-folder-open" style="font-size:36px;opacity:.3;display:block;margin-bottom:12px"></i>No projects match your filters.</div>';
+  } else if(projSort==='launch'||projSort==='due'){
+    // Flat sorted — one section
+    h+='<div class="proj-ws-section"><div class="proj-ws-hdr"><span class="proj-ws-dot-lg" style="background:var(--accent2)"></span><span class="proj-ws-name" style="color:var(--text)">All Projects — sorted by '+(projSort==='launch'?'Launch Date':'Due Date')+'</span><span class="proj-ws-chips"><span class="ws-badge wsb-count">'+filtered.length+' projects</span></span></div><div class="proj-ws-cards">';
+    filtered.forEach(function(p){h+=renderProjCard(p)});
+    h+='</div></div>';
+  } else {
+    // Workstream groups
+    WS.forEach(function(w){
+      var wPs=filtered.filter(function(p){return p.ws===w.name});
+      if(!wPs.length)return;
+      var gid='wsg-'+w.name.replace(/[\s\/]/g,'-');
+      var isOpen=wsOpenState[gid]!==false;
+      var dC=wsc(w.color),dly=wPs.filter(function(p){return p.pStatus==='delayed'}).length,risk=wPs.filter(function(p){return p.pStatus==='at-risk'}).length;
+      h+='<div class="proj-ws-section">';
+      h+='<div class="proj-ws-hdr" onclick="toggleWsSection(\''+gid+'\')">';
+      h+='<span class="proj-ws-dot-lg" style="background:'+dC+'"></span>';
+      h+='<span class="proj-ws-name">'+esc(w.name)+'</span>';
+      h+='<div class="proj-ws-chips"><span class="ws-badge wsb-count">'+wPs.length+' project'+(wPs.length!==1?'s':'')+'</span>';
+      if(dly)h+='<span class="ws-badge wsb-alert"><i class="fa-solid fa-circle-xmark"></i>'+dly+'</span>';
+      if(risk)h+='<span class="ws-badge wsb-risk"><i class="fa-solid fa-triangle-exclamation"></i>'+risk+'</span>';
+      h+='</div><i class="fa-solid fa-chevron-right proj-ws-toggle'+(isOpen?' open':'')+'"></i></div>';
+      h+='<div id="wsc-'+gid+'" style="'+(isOpen?'':'display:none')+'"><div class="proj-ws-cards">';
+      wPs.forEach(function(p){h+=renderProjCard(p)});
+      h+='</div></div></div>';
+    });
+  }
+  h+='</div>';
+  var body=document.getElementById('projListBody');
+  body.innerHTML=h;
+  body.querySelectorAll('.proj-card').forEach(function(c){c.addEventListener('click',function(){openProjectModal(this.dataset.id)})});
+}
+function toggleWsSection(gid){
+  wsOpenState[gid]=wsOpenState[gid]===false?true:false;
+  var body=document.getElementById('wsc-'+gid);
+  var chev=document.querySelector('.proj-ws-hdr[onclick*="'+gid+'"] .proj-ws-toggle');
+  if(body)body.style.display=wsOpenState[gid]===false?'none':'';
+  if(chev)chev.classList.toggle('open',wsOpenState[gid]!==false);
+}
+function toggleWsGroup(gid){
+  wsGroupState[gid]=wsGroupState[gid]===false;
+  var b=document.getElementById('body-'+gid),c=document.querySelector('#'+CSS.escape(gid)+' .ws-chevron');
+  if(b)b.style.display=wsGroupState[gid]?'none':'';
+  if(c)c.classList.toggle('open',!wsGroupState[gid]);
+}
+function jumpToWs(wsName){
+  switchTab('projects');
+  projSort='ws';
+  document.querySelectorAll('.sort-btn[data-ps]').forEach(function(b){b.classList.toggle('active',b.dataset.ps==='ws')});
+  if(wsName==='all'){wsOpenState={};renderProjectList();return;}
+  WS.forEach(function(w){var gid='wsg-'+w.name.replace(/[\s\/]/g,'-');wsOpenState[gid]=w.name===wsName;});
+  renderProjectList();
+  setTimeout(function(){var sec=document.querySelector('.proj-ws-hdr');if(sec){var match=document.querySelector('[onclick*="'+wsName.replace(/[\s\/]/g,'-')+'"]');if(match)match.scrollIntoView({behavior:'smooth',block:'start'})}},120);
+}
+function buildProjWsFilterRow(){
+  var bar=document.getElementById('projWsFilterRow');if(!bar)return;
+  var h='<span style="font-size:11px;color:var(--text3);align-self:center;flex-shrink:0">Workstream:</span>';
+  h+='<button class="ws-filter-pill active" onclick="jumpToWs(\'all\')">All</button>';
+  WS.forEach(function(w){var dC=wsc(w.color);h+='<button class="ws-filter-pill" style="border-color:rgba('+rgb(w.color)+',.4)" onclick="jumpToWs(\''+w.name.replace(/'/g,'\\\'')+'\')"><span style="width:6px;height:6px;border-radius:50%;background:'+dC+';display:inline-block;flex-shrink:0"></span>'+esc(w.name)+'</button>';});
+  bar.innerHTML=h;
+}
+document.querySelectorAll('.filter-chip[data-pf]').forEach(function(chip){chip.addEventListener('click',function(){document.querySelectorAll('.filter-chip[data-pf]').forEach(function(c){c.classList.remove('active')});this.classList.add('active');projFilter=this.dataset.pf;renderProjectList()})});
+document.getElementById('projSearch').addEventListener('input',function(){renderProjectList()});
+document.querySelectorAll('.sort-btn[data-ps]').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('.sort-btn[data-ps]').forEach(function(b){b.classList.remove('active')});this.classList.add('active');projSort=this.dataset.ps;renderProjectList()})});
+function openProjectModal(id){
+  var p=PROJECTS.find(function(x){return x.id===id});if(!p)return;
+  var lead=getM(p.lead);
+  document.getElementById('modalTitle').textContent=p.name;
+  var h='';
+  h+='<div class="modal-field"><label>Project ID</label><div class="mono">'+esc(p.id)+'</div></div>';
+  h+='<div class="modal-field"><label>Status</label><div style="display:flex;gap:8px">'+pill(p.status)+pill(p.pStatus)+'</div></div>';
+  h+='<div class="modal-field"><label>Workstream</label><div class="val" style="display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:'+wsc(p.wsColor)+';display:inline-block"></span>'+esc(p.ws)+'</div></div>';
+  h+='<div class="modal-field"><label>Due Date</label><div class="val">'+esc(p.dueDate)+' 2026</div></div>';
+  if(lead)h+='<div class="modal-field"><label>Lead</label><div style="display:flex;align-items:center;gap:10px"><div style="width:34px;height:34px;border-radius:50%;background:rgba('+rgb(lead.color)+',.15);color:'+lead.color+';display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">'+lead.initials+'</div><div><div style="font-size:14px;font-weight:600">'+esc(lead.name)+'</div><div style="font-size:11px;color:var(--text2)">'+esc(lead.role)+'</div></div></div></div>';
+  h+='<div class="modal-field"><label>Progress</label><div style="margin-top:4px"><div class="progress-bar" style="height:6px"><div class="progress-fill" style="width:'+p.progress+'%;background:'+wsc(p.wsColor)+'"></div></div><div style="font-size:11px;color:var(--text2);margin-top:4px">'+p.progress+'% complete</div></div></div>';
+  if(p.milestones&&p.milestones.length>0){h+='<div class="modal-field"><label>Milestones</label><div class="ms-list">';p.milestones.forEach(function(ms){var msC=ms.urg==='urgent'?'#f87171':ms.urg==='soon'?'#fbbf24':'#34d399';h+='<div class="ms-item"><span class="ms-dot" style="background:'+msC+'"></span><span class="ms-name">'+esc(ms.name)+'</span><span class="ms-date" style="color:'+msC+'">'+esc(ms.date)+'</span></div>'});h+='</div></div>'}
+  h+='<div class="modal-field"><label>Tags</label><div style="display:flex;gap:6px;flex-wrap:wrap">'+p.tags.map(function(t){return'<span class="proj-tag-sm" style="font-size:11px;padding:3px 8px">'+esc(t)+'</span>'}).join('')+'</div></div>';
+  document.getElementById('modalBody').innerHTML=h;
+  document.getElementById('projectModal').classList.add('active');
+}
+document.getElementById('closeProjectModal').addEventListener('click',function(){document.getElementById('projectModal').classList.remove('active')});
+document.getElementById('projectModal').addEventListener('click',function(e){if(e.target===e.currentTarget)e.currentTarget.classList.remove('active')});
+// RESOURCES
+var activeCapFilter='all',resourceSort='high',resourceView='cards';
+document.getElementById('sortHighBtn').addEventListener('click',function(){resourceSort='high';this.classList.add('active');document.getElementById('sortLowBtn').classList.remove('active');renderResources()});
+document.getElementById('sortLowBtn').addEventListener('click',function(){resourceSort='low';this.classList.add('active');document.getElementById('sortHighBtn').classList.remove('active');renderResources()});
+document.getElementById('viewCardsBtn').addEventListener('click',function(){resourceView='cards';this.classList.add('active');document.getElementById('viewTimelineBtn').classList.remove('active');renderResources()});
+document.getElementById('viewTimelineBtn').addEventListener('click',function(){resourceView='timeline';this.classList.add('active');document.getElementById('viewCardsBtn').classList.remove('active');renderResources()});
+function buildCapFilterBar(){
+  var bar=document.getElementById('capFilterBar');
+  var h='<button class="filter-chip active" data-capf="all">All</button>';
+  CAPS.forEach(function(cap){h+='<button class="filter-chip" data-capf="'+cap.id+'">'+esc(cap.name)+'</button>'});
+  bar.innerHTML=h;
+  bar.querySelectorAll('.filter-chip').forEach(function(btn){btn.addEventListener('click',function(){bar.querySelectorAll('.filter-chip').forEach(function(b){b.classList.remove('active')});this.classList.add('active');activeCapFilter=this.dataset.capf;renderResources()})});
+}
+function capColor(pct){return pct>=100?'#f87171':pct>=86?'#fb923c':pct>=61?'#fbbf24':'#34d399';}
+function renderResources(){
+  var overloaded=TEAM.filter(function(m){return allocHrs(m.initials)>m.weeklyCapHrs});
+  var atRiskMs=TEAM.filter(function(m){return(ALLOC[m.initials]||[]).some(function(a){return a.pStatus==='at-risk'})});
+  var totalCap=TEAM.reduce(function(s,m){return s+m.capacity},0),avgUtil=Math.round(totalCap/TEAM.length);
+  var alertCount=overloaded.length+Object.values(ALLOC).reduce(function(s,arr){return s+arr.filter(function(a){return a.pStatus==='delayed'}).length},0);
+  document.getElementById('resAlertsCount').textContent=alertCount;
+  var sb=document.getElementById('resSummaryBar');
+  if(sb){
+    var g=TEAM.filter(function(m){return m.capacity<=60}).length/TEAM.length*100;
+    var y=TEAM.filter(function(m){return m.capacity>60&&m.capacity<=85}).length/TEAM.length*100;
+    var o=TEAM.filter(function(m){return m.capacity>85&&m.capacity<=100}).length/TEAM.length*100;
+    var r=TEAM.filter(function(m){return m.capacity>100}).length/TEAM.length*100;
+    var sbH='<div class="res-sum-stat"><span class="res-sum-val" style="color:'+capColor(avgUtil)+'">'+avgUtil+'%</span><span class="res-sum-lbl">Team Utilization</span></div>';
+    sbH+='<div class="res-sum-div"></div><div class="res-sum-stat"><span class="res-sum-val" style="color:#f87171">'+overloaded.length+'</span><span class="res-sum-lbl">Overloaded</span></div>';
+    sbH+='<div class="res-sum-div"></div><div class="res-sum-stat"><span class="res-sum-val" style="color:#fbbf24">'+atRiskMs.length+'</span><span class="res-sum-lbl">At Risk</span></div>';
+    sbH+='<div class="res-sum-div"></div><div class="util-bar-wrap"><span style="font-size:10px;color:var(--text3);white-space:nowrap;flex-shrink:0">Capacity bands</span><div class="util-bar"><div class="util-seg" style="width:'+g.toFixed(1)+'%;background:#34d399"></div><div class="util-seg" style="width:'+y.toFixed(1)+'%;background:#fbbf24"></div><div class="util-seg" style="width:'+o.toFixed(1)+'%;background:#fb923c"></div><div class="util-seg" style="width:'+r.toFixed(1)+'%;background:#f87171"></div></div><span style="font-size:9px;color:var(--text3)"><span style="color:#34d399">■</span>0-60 <span style="color:#fbbf24">■</span>61-85 <span style="color:#fb923c">■</span>86-100 <span style="color:#f87171">■</span>100+</span></div>';
+    sb.innerHTML=sbH;
+  }
+  if(resourceView==='timeline'){renderGanttView();return;}
+  var caps=activeCapFilter==='all'?CAPS:CAPS.filter(function(c){return c.id===activeCapFilter});
+  var h='';
+  caps.forEach(function(cap){
+    var members=cap.members.map(function(i){return TEAM.find(function(m){return m.initials===i})}).filter(Boolean);
+    members=members.slice().sort(function(a,b){
+      var aO=allocHrs(a.initials)>a.weeklyCapHrs,bO=allocHrs(b.initials)>b.weeklyCapHrs;
+      if(aO&&!bO)return-1;if(!aO&&bO)return 1;
+      return resourceSort==='high'?b.capacity-a.capacity:a.capacity-b.capacity;
+    });
+    var capAlerts=members.filter(function(m){return allocHrs(m.initials)>m.weeklyCapHrs||(ALLOC[m.initials]||[]).some(function(a){return a.pStatus==='delayed'})}).length;
+    h+='<div class="cap-section"><div class="cap-section-hdr"><div class="cap-icon"><i class="fa-solid '+cap.icon+'"></i></div><div class="cap-name">'+esc(cap.name)+'</div>';
+    h+='<div class="cap-meta"><span class="cap-count">'+members.length+' member'+(members.length!==1?'s':'')+'</span>';
+    if(capAlerts>0)h+='<span class="cap-alerts"><i class="fa-solid fa-triangle-exclamation"></i>'+capAlerts+' alert'+(capAlerts!==1?'s':'')+'</span>';
+    h+='</div></div><div class="cap-members-row">';
+    members.forEach(function(m){
+      var c=m.capacity,totalH=allocHrs(m.initials),bC=capColor(c);
+      var allocs=(ALLOC[m.initials]||[]).filter(function(a){return a.pStatus!=='done'});
+      var isOverCap=totalH>m.weeklyCapHrs,overBy=totalH-m.weeklyCapHrs;
+      var remH=m.weeklyCapHrs-totalH,remClr=isOverCap?'rem-over':remH<=4?'rem-danger':remH<=10?'rem-warn':'rem-ok';
+      h+='<div class="member-card'+(isOverCap?' overcap':c>=75?' high-load':'')+'" style="position:relative" data-initials="'+m.initials+'" onclick="openMemberPanel(\''+m.initials+'\')">';
+      if(isOverCap)h+='<div class="overcap-alert"><i class="fa-solid fa-triangle-exclamation" style="font-size:9px"></i>Over +'+overBy+'h</div>';
+      else if(c>=90)h+='<div class="overload-badge"><i class="fa-solid fa-triangle-exclamation"></i></div>';
+      if(m.img){h+='<img src="'+m.img+'" class="mc-photo" alt="'+esc(m.name)+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">';}
+      h+='<div class="mc-photo-placeholder" style="background:rgba('+rgb(m.color)+',.15);color:'+m.color+';'+(m.img?'display:none':'')+'">'+m.initials+'</div>';
+      h+='<div class="mc-name">'+esc(m.name)+'</div>';
+      h+='<div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;flex-wrap:wrap">';
+      h+='<div class="mc-role" style="margin-bottom:0">'+esc(m.role)+'</div>';
+      h+='<span class="type-badge type-'+(m.type||'ft')+'">'+(m.type==='contractor'?'Contractor':'FT')+'</span>';
+      if(m.ooo)h+='<span class="ooo-badge"><i class="fa-solid fa-plane-departure" style="font-size:8px"></i>OOO '+esc(m.ooo.start)+'</span>';
+      h+='</div>';
+      h+='<div class="mc-bar"><div class="mc-bar-fill" style="width:'+Math.min(c,100)+'%;background:'+bC+'" id="mcBar-'+m.initials+'"></div></div>';
+      var hrsClr=totalH>40?'#f87171':'var(--text3)';
+      h+='<div class="mc-cap-row"><span class="mc-pct" style="color:'+bC+'" id="mcPct-'+m.initials+'">'+c+'%</span><span class="mc-proj" id="mcProj-'+m.initials+'" style="color:'+hrsClr+'">'+allocs.length+' proj · '+totalH+'h</span></div>';
+      h+='<div class="cap-remaining '+remClr+'" id="mcRem-'+m.initials+'">'+(isOverCap?'+'+overBy+'h over capacity':remH+'h remaining')+'</div>';
+      if(allocs.length>0){
+        var dC2=allocs.filter(function(a){return a.pStatus==='delayed'}).length,rC2=allocs.filter(function(a){return a.pStatus==='at-risk'}).length,oC2=allocs.filter(function(a){return a.pStatus==='on-track'}).length;
+        h+='<div class="mc-flags">';
+        if(dC2)h+='<span class="flag-chip fc-d"><i class="fa-solid fa-circle-xmark"></i>'+dC2+' delayed</span>';
+        if(rC2)h+='<span class="flag-chip fc-r"><i class="fa-solid fa-triangle-exclamation"></i>'+rC2+' risk</span>';
+        if(oC2)h+='<span class="flag-chip fc-ok"><i class="fa-solid fa-circle-check"></i>'+oC2+' ok</span>';
+        h+='</div>';
+        h+='<div class="mc-proj-list" onclick="event.stopPropagation()">';
+        allocs.forEach(function(a,idx){
+          var piC=a.pStatus==='delayed'?'#f87171':a.pStatus==='at-risk'?'#fbbf24':'#34d399';
+          var bCa=a.pStatus==='delayed'?'#f87171':a.pStatus==='at-risk'?'#fbbf24':'var(--text2)';
+          h+='<div class="mc-proj-item"><span class="pi-status-dot" style="background:'+piC+'" title="'+a.pStatus+'"></span><span class="mc-pi-name" style="color:'+bCa+'" title="'+esc(a.name)+'">'+esc(a.name)+'</span>';
+          h+='<div class="mc-pi-ctrl"><button class="mc-pi-btn" onclick="cardAdjustAlloc(\''+m.initials+'\','+idx+',-2)">−</button><span class="mc-pi-hrs" id="cHrs-'+m.initials+'-'+idx+'">'+a.hrs+'h</span><button class="mc-pi-btn" onclick="cardAdjustAlloc(\''+m.initials+'\','+idx+',2)">+</button></div></div>';
+        });
+        h+='</div>';
+      }
+      h+='</div>';
+    });
+    h+='</div></div>';
+  });
+  document.getElementById('resBody').innerHTML=h;
+}
+function cardAdjustAlloc(initials,idx,delta){
+  var a=(ALLOC[initials]||[])[idx];if(!a)return;
+  a.hrs=Math.max(2,Math.min(40,a.hrs+delta));
+  var hEl=document.getElementById('cHrs-'+initials+'-'+idx);
+  if(hEl)hEl.textContent=a.hrs+'h';
+  var totalH=allocHrs(initials),m=TEAM.find(function(x){return x.initials===initials});
+  if(m){var bC=totalH>m.weeklyCapHrs?'#f87171':totalH>m.weeklyCapHrs*.85?'#fbbf24':'#34d399';
+    var bEl=document.getElementById('mcBar-'+initials),pEl=document.getElementById('mcPct-'+initials),prEl=document.getElementById('mcProj-'+initials);
+    var pct=Math.round(totalH/m.weeklyCapHrs*100);
+    if(bEl){bEl.style.width=Math.min(pct,100)+'%';bEl.style.background=bC;}
+    if(pEl){pEl.textContent=pct+'%';pEl.style.color=bC;}
+    if(prEl){prEl.textContent=(ALLOC[initials]||[]).filter(function(x){return x.pStatus!=='done'}).length+' proj · '+totalH+'h';prEl.style.color=totalH>40?'#f87171':'var(--text3)';}
+  }
+  showToast(a.name+' → '+a.hrs+'h','#00D632');
+}
+// GANTT / TIMELINE VIEW
+var GANTT_START_DAY=new Date(2026,1,1); // Feb 1
+var GANTT_TOTAL_DAYS=150; // Feb 1 – Jun 30
+var GANTT_MONTHS=[{label:'Feb',days:28},{label:'Mar',days:31},{label:'Apr',days:30},{label:'May',days:31},{label:'Jun',days:30}];
+var MONTH_OFFSET={Jan:-31,Feb:0,Mar:28,Apr:59,May:89,Jun:120,Jul:150};
+function dayOffset(ds){var p=(ds||'').trim().split(' ');return(MONTH_OFFSET[p[0]]||0)+(parseInt(p[1])||1)-1;}
+function pct(ds){return Math.max(0,Math.min(100,dayOffset(ds)/GANTT_TOTAL_DAYS*100)).toFixed(2);}
+function renderGanttView(){
+  var GPX=14; // pixels per day
+  var TOTAL_PX=GANTT_TOTAL_DAYS*GPX; // 2100px
+  var DEPT_LBL={'creative-lead':'Creative Lead','design':'Design','motion-3d':'3D & Motion','strategy':'Strategy','production':'Production','writing':'Writing'};
+  var GANTT_MDAYS=[28,31,30,31,30],GANTT_MLBLS=['Feb','Mar','Apr','May','Jun'];
+  function dayToLabel(d){var r=d;for(var i=0;i<GANTT_MDAYS.length;i++){if(r<GANTT_MDAYS[i])return GANTT_MLBLS[i]+' '+(r+1);r-=GANTT_MDAYS[i];}return '';}
+  var caps=activeCapFilter==='all'?CAPS:CAPS.filter(function(c){return c.id===activeCapFilter});
+  var allMembers=[];
+  caps.forEach(function(cap){cap.members.forEach(function(i){var m=TEAM.find(function(x){return x.initials===i});if(m&&allMembers.indexOf(m)<0)allMembers.push(m)})});
+  var todayPx=dayOffset('Mar 11')*GPX;
+  // ── STICKY HEADER ──
+  var h='<div class="gantt-wrap">';
+  h+='<div class="gantt-sticky-hdr">';
+  h+='<div class="gantt-hdr-spacer"></div>';
+  h+='<div class="gantt-hdr-tracks" style="min-width:'+TOTAL_PX+'px">';
+  // Row 1: Months
+  h+='<div class="gantt-month-row" style="min-width:'+TOTAL_PX+'px">';
+  var mAcc=0;
+  GANTT_MONTHS.forEach(function(mo){
+    h+='<div class="gantt-month-cell" style="left:'+mAcc+'px;width:'+(mo.days*GPX)+'px">'+mo.label+'</div>';
+    mAcc+=mo.days*GPX;
+  });
+  h+='</div>';
+  // Row 2: Weeks + day ticks
+  h+='<div class="gantt-week-row" style="min-width:'+TOTAL_PX+'px">';
+  for(var dd=0;dd<GANTT_TOTAL_DAYS;dd++){
+    if(dd%7===0){
+      h+='<div class="gantt-week-cell" style="left:'+(dd*GPX)+'px"><span class="gantt-week-lbl">'+dayToLabel(dd)+'</span></div>';
+    } else {
+      h+='<div class="gantt-day-tick" style="left:'+(dd*GPX)+'px"></div>';
+    }
+  }
+  h+='</div>';
+  h+='</div></div>';
+  // ── MEMBER ROWS ──
+  allMembers.forEach(function(m){
+    var allocs=(ALLOC[m.initials]||[]);
+    if(!allocs.length)return;
+    // Track bg: day lines every GPX, week lines every 7*GPX
+    var trackBg='repeating-linear-gradient(to right,transparent 0,transparent '+(GPX*7-1)+'px,rgba(0,0,0,.07) '+(GPX*7-1)+'px,rgba(0,0,0,.07) '+(GPX*7)+'px),repeating-linear-gradient(to right,transparent 0,transparent '+(GPX-1)+'px,rgba(0,0,0,.03) '+(GPX-1)+'px,rgba(0,0,0,.03) '+GPX+'px),var(--bg3)';
+    h+='<div class="gantt-member-row">';
+    h+='<div class="gantt-label"><div class="gantt-av" style="background:rgba('+rgb(m.color)+',.15);color:'+m.color+'">'+m.initials+'</div>';
+    h+='<div style="min-width:0"><div class="gantt-lname">'+esc(m.name)+'</div><div style="font-size:9px;color:var(--text3)">'+esc(m.role)+'</div>';
+    if(m.dept)h+='<div style="font-size:8px;text-transform:uppercase;letter-spacing:.4px;color:var(--text3);opacity:.65;margin-top:1px">'+(DEPT_LBL[m.dept]||m.dept)+'</div>';
+    h+='</div></div>';
+    h+='<div class="gantt-tracks" style="min-width:'+TOTAL_PX+'px;background-image:'+trackBg+'">';
+    // Today line
+    h+='<div class="gantt-today-line" style="left:'+todayPx+'px"><span class="gantt-today-lbl">Today</span></div>';
+    // Month boundary lines
+    var mOff=0;
+    GANTT_MONTHS.forEach(function(mo,i){if(i>0)h+='<div class="gantt-vline" style="left:'+mOff+'px;background:rgba(0,0,0,.15)"></div>';mOff+=mo.days*GPX;});
+    // Bars
+    allocs.forEach(function(a){
+      var proj=PROJECTS.find(function(p){return p.id===a.pid});
+      var sd=proj?proj.startDate:'Feb 1',ed=a.dueDate||'Mar 30';
+      var startPx=dayOffset(sd)*GPX;
+      var wPx=Math.max(GPX,(dayOffset(ed)-dayOffset(sd))*GPX);
+      var bC=wsc(a.wsColor),tC=a.pStatus==='delayed'?'#f87171':a.pStatus==='at-risk'?'#fbbf24':'rgba(0,0,0,.75)';
+      var tentBg=a.tentative?'repeating-linear-gradient(45deg,rgba('+rgb(a.wsColor)+',.1),rgba('+rgb(a.wsColor)+',.1) 5px,rgba('+rgb(a.wsColor)+',.28) 5px,rgba('+rgb(a.wsColor)+',.28) 10px)':'rgba('+rgb(a.wsColor)+',.3)';
+      var tentBorder=a.tentative?'1.5px dashed '+bC:'1px solid '+bC;
+      var barH=Math.max(10,Math.round(a.hrs*1.6));
+      h+='<div class="gantt-track-row" style="height:'+(barH+6)+'px">';
+      h+='<div class="gantt-bar" style="left:'+startPx+'px;width:'+wPx+'px;height:'+barH+'px;background:'+tentBg+';border:'+tentBorder+';color:'+tC+'" title="'+esc(a.name)+' · '+esc(sd)+' → '+esc(ed)+' · '+a.hrs+'h/wk'+(a.tentative?' [Tentative]':'')+'">';
+      h+=(a.tentative?'~ ':'')+esc(a.name);
+      h+='<span class="gantt-bar-hrs">'+a.hrs+'h</span>';
+      h+='</div>';
+      h+='</div>';
+    });
+    h+='</div></div>';
+  });
+  h+='</div>';
+  document.getElementById('resBody').innerHTML=h;
+}
+var _mpInitials='';
+function openMemberPanel(initials){
+  _mpInitials=initials;
+  var m=TEAM.find(function(x){return x.initials===initials});if(!m)return;
+  var c=m.capacity,bC=c>=90?'#f87171':c>=75?'#fbbf24':'#34d399',totalH=allocHrs(initials);
+  // Photo
+  var photoEl=document.getElementById('mpPhoto'),avatarEl=document.getElementById('mpAvatar');
+  if(m.img){photoEl.src=m.img;photoEl.style.display='block';avatarEl.style.display='none';}
+  else{photoEl.style.display='none';avatarEl.style.display='flex';avatarEl.style.cssText='background:rgba('+rgb(m.color)+',.15);color:'+m.color;avatarEl.textContent=m.initials;}
+  document.getElementById('mpName').textContent=m.name;
+  document.getElementById('mpRole').textContent=m.role;
+  var fl=document.getElementById('mpFlag');
+  var flags='';
+  flags+=c>=90?'<span class="mp-flag" style="background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2)"><i class="fa-solid fa-triangle-exclamation"></i> OVERLOADED</span>':c>=75?'<span class="mp-flag" style="background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.2)"><i class="fa-solid fa-gauge-high"></i> HIGH LOAD</span>':'<span class="mp-flag" style="background:rgba(16,185,129,.1);color:#34d399;border:1px solid rgba(16,185,129,.2)"><i class="fa-solid fa-circle-check"></i> AVAILABLE</span>';
+  flags+='<span class="type-badge type-'+(m.type||'ft')+'">'+(m.type==='contractor'?'Contractor':'Full-time')+'</span>';
+  if(m.ooo)flags+='<span class="ooo-badge"><i class="fa-solid fa-plane-departure" style="font-size:8px"></i>OOO '+esc(m.ooo.start)+' – '+esc(m.ooo.end)+' ('+esc(m.ooo.note||'')+')</span>';
+  fl.innerHTML=flags;
+  document.getElementById('mpCapPct').textContent=c+'%';document.getElementById('mpCapPct').style.color=bC;
+  document.getElementById('mpCapBar').style.cssText='width:'+c+'%;background:'+bC;
+  document.getElementById('mpCapHrs').innerHTML='<span>'+totalH+'h allocated</span><span>'+m.weeklyCapHrs+'h cap</span>';
+  renderPanelAllocs(initials);refreshPanelFooter(initials);
+  document.getElementById('memberPanel').classList.add('open');document.getElementById('memberOverlay').classList.add('open');
+}
+function renderPanelAllocs(initials){
+  var allocs=ALLOC[initials]||[],h='';
+  allocs.forEach(function(a,idx){
+    var dC=wsc(a.wsColor),fp=Math.min(Math.round(a.hrs/40*100),100),bC=a.pStatus==='delayed'?'#f87171':a.pStatus==='at-risk'?'#fbbf24':'#00D632',isLate=['Mar 12','Mar 14'].indexOf(a.dueDate)>-1;
+    h+='<div class="alloc-row'+(a.pStatus==='delayed'?' row-delayed':a.pStatus==='at-risk'?' row-at-risk':'')+'">';
+    h+='<div class="ar-top"><span class="ar-dot" style="background:'+dC+'"></span><span class="ar-name">'+esc(a.name)+'</span>'+pill(a.pStatus)+'</div>';
+    h+='<div class="ar-meta"><span class="ar-code">'+esc(a.pid)+'</span><span class="ar-due'+(isLate?' late':'')+'"><i class="fa-regular fa-calendar"></i> '+esc(a.dueDate)+'</span></div>';
+    if(a.pStatus!=='done'){
+      h+='<div class="ar-adjust"><div class="ar-bar-wrap"><div class="ar-bar"><div class="ar-bar-fill" style="width:'+fp+'%;background:'+bC+'" id="arBar-'+initials+'-'+idx+'"></div></div></div>';
+      h+='<div class="ar-controls"><button class="ar-btn" onclick="adjustAlloc(\''+initials+'\','+idx+',-2)">−</button><span class="ar-hrs" id="arHrs-'+initials+'-'+idx+'">'+a.hrs+'h</span><button class="ar-btn" onclick="adjustAlloc(\''+initials+'\','+idx+',2)">+</button></div></div>';
+    }else{
+      h+='<div style="font-size:11px;color:var(--text3);margin-top:4px"><i class="fa-solid fa-check" style="color:#34d399;margin-right:4px"></i>Complete · '+a.hrs+'h logged</div>';
+    }
+    h+='</div>';
+  });
+  document.getElementById('mpAllocList').innerHTML=h;
+}
+function adjustAlloc(initials,idx,delta){
+  var a=(ALLOC[initials]||[])[idx];if(!a)return;
+  a.hrs=Math.max(2,Math.min(40,a.hrs+delta));
+  var hEl=document.getElementById('arHrs-'+initials+'-'+idx),bEl=document.getElementById('arBar-'+initials+'-'+idx);
+  if(hEl)hEl.textContent=a.hrs+'h';if(bEl)bEl.style.width=Math.min(Math.round(a.hrs/40*100),100)+'%';
+  refreshPanelFooter(initials);showToast('Updated: '+a.name+' → '+a.hrs+'h','#00D632');
+}
+function refreshPanelFooter(initials){
+  var m=TEAM.find(function(x){return x.initials===initials});if(!m)return;
+  var totalH=allocHrs(initials),isOver=totalH>m.weeklyCapHrs,hC=isOver?'#f87171':totalH>m.weeklyCapHrs*.85?'#fbbf24':'#34d399';
+  document.getElementById('mpTotalHrs').textContent=totalH+'h / '+m.weeklyCapHrs+'h';document.getElementById('mpTotalHrs').style.color=hC;
+  document.getElementById('mpCapHrs').innerHTML='<span>'+totalH+'h allocated</span><span>'+m.weeklyCapHrs+'h cap</span>';
+  document.getElementById('mpOverloadWarn').innerHTML=isOver?'<div class="mp-overload-warn"><i class="fa-solid fa-triangle-exclamation"></i> Over by '+(totalH-m.weeklyCapHrs)+'h — consider rebalancing</div>':'';
+}
+document.getElementById('closeMemberPanel').addEventListener('click',closeMemberPanel);
+document.getElementById('memberOverlay').addEventListener('click',closeMemberPanel);
+function closeMemberPanel(){document.getElementById('memberPanel').classList.remove('open');document.getElementById('memberOverlay').classList.remove('open')}
+document.getElementById('mpAssignBtn').addEventListener('click',function(){openAssignModal(_mpInitials)});
+function openAssignModal(initials){
+  var m=TEAM.find(function(x){return x.initials===initials});if(!m)return;
+  var assigned=(ALLOC[initials]||[]).map(function(a){return a.pid});
+  var avail=PROJECTS.filter(function(p){return p.pStatus!=='done'&&assigned.indexOf(p.id)<0});
+  document.getElementById('assignModalTitle').textContent='Assign Project — '+m.name;
+  var sel=document.getElementById('assignProjectSelect');
+  sel.innerHTML=avail.map(function(p){return'<option value="'+p.id+'">'+p.name+' ('+p.ws+')</option>'}).join('');
+  if(!avail.length)sel.innerHTML='<option>All active projects already assigned</option>';
+  document.getElementById('assignModalOverlay').classList.add('active');
+}
+document.getElementById('assignCancelBtn').addEventListener('click',function(){document.getElementById('assignModalOverlay').classList.remove('active')});
+document.getElementById('assignConfirmBtn').addEventListener('click',function(){
+  var pid=document.getElementById('assignProjectSelect').value;
+  var hrs=parseInt(document.getElementById('assignHrsInput').value)||10;
+  var tentative=document.getElementById('assignTentativeCheck').checked;
+  var p=PROJECTS.find(function(x){return x.id===pid});
+  if(!p||!_mpInitials)return;
+  if(!ALLOC[_mpInitials])ALLOC[_mpInitials]=[];
+  ALLOC[_mpInitials].push({pid:p.id,hrs:hrs,name:p.name,wsColor:p.wsColor,dueDate:p.dueDate,pStatus:p.pStatus,tentative:tentative});
+  document.getElementById('assignModalOverlay').classList.remove('active');
+  document.getElementById('assignTentativeCheck').checked=false;
+  renderPanelAllocs(_mpInitials);refreshPanelFooter(_mpInitials);
+  renderResources();
+  showToast(p.name+(tentative?' tentatively':'')+' assigned to '+_mpInitials+' ('+hrs+'h)',tentative?'#f59e0b':'#10b981');
+});
+// AI STUDIO
+var activeAICat='overview';
+// AI Studio — DAM assets
+var AI_ASSETS=[
+  {id:'a1',title:'Campaign Hero Photography',category:'Photography',thumb:'📸',tags:['campaign','hero','editorial'],owner:'Maya Torres',date:'Nov 2024'},
+  {id:'a2',title:'Brand Illustration Set',category:'Illustration',thumb:'🎨',tags:['illustration','flat','brand'],owner:'Alex Chen',date:'Oct 2024'},
+  {id:'a3',title:'3D Logo Mark',category:'3D',thumb:'🧊',tags:['3D','logo','render'],owner:'Jordan Park',date:'Sep 2024'},
+  {id:'a4',title:'Social Template Pack',category:'Graphic',thumb:'📐',tags:['social','templates','figma'],owner:'Priya Nair',date:'Dec 2024'},
+  {id:'a5',title:'Mobile UI Kit',category:'UI',thumb:'📱',tags:['UI','mobile','components'],owner:'Alex Chen',date:'Aug 2024'},
+  {id:'a6',title:'Lifestyle Photography',category:'Photography',thumb:'📸',tags:['lifestyle','candid','people'],owner:'Maya Torres',date:'Jul 2024'},
+  {id:'a7',title:'Icon Library',category:'Graphic',thumb:'🔷',tags:['icons','SVG','library'],owner:'Jordan Park',date:'Jun 2024'},
+  {id:'a8',title:'Environmental Renders',category:'3D',thumb:'🌆',tags:['3D','environment','render'],owner:'Sam Wilder',date:'May 2024'},
+  {id:'a9',title:'Print Collateral Pack',category:'Graphic',thumb:'🖨',tags:['print','collateral','brochure'],owner:'Priya Nair',date:'Apr 2024'},
+  {id:'a10',title:'Web Component Library',category:'UI',thumb:'🖥',tags:['UI','web','components'],owner:'Alex Chen',date:'Mar 2024'},
+  {id:'a11',title:'Portrait Series',category:'Photography',thumb:'🖼',tags:['portrait','people','studio'],owner:'Maya Torres',date:'Feb 2024'},
+  {id:'a12',title:'Motion Graphics Stills',category:'Illustration',thumb:'🎬',tags:['motion','animation','stills'],owner:'Sam Wilder',date:'Jan 2024'},
+];
+// AI Studio — Education sessions
+var AI_EDU=[
+  {title:'Mockup Workflow Deep Dive',date:'Mar 18, 2026',time:'2:00 PM PT',format:'Hands-on',presenters:['Alex Chen'],status:'upcoming',tags:['mockup','AI','photoshop']},
+  {title:'AI Prompt Engineering for Brand',date:'Mar 25, 2026',time:'11:00 AM PT',format:'Workshop',presenters:['Maya Torres','Priya Nair'],status:'upcoming',tags:['AI','prompt engineering']},
+  {title:'Photography Direction + AI Compositing',date:'Apr 8, 2026',time:'1:00 PM PT',format:'Show & Tell',presenters:['Sam Wilder'],status:'upcoming',tags:['photography','compositing','AI']},
+  {title:'Intro to Goose Skills',date:'Jan 14, 2026',time:'3:00 PM PT',format:'Hands-on',presenters:['Jordan Park'],status:'past',notesLink:'#',recordingLink:'#',tags:['Goose','AI','skills']},
+  {title:'Color Grading for Brand Consistency',date:'Feb 4, 2026',time:'2:00 PM PT',format:'Workshop',presenters:['Alex Chen','Maya Torres'],status:'past',notesLink:'#',recordingLink:'#',tags:['color','grading','LUT']},
+  {title:'Card Workflow Fundamentals',date:'Feb 25, 2026',time:'11:00 AM PT',format:'Show & Tell',presenters:['Priya Nair'],status:'past',notesLink:'#',recordingLink:'#',tags:['card workflow','figma','print']},
+];
+// AI Studio — Resources
+var AI_RESOURCES=[
+  {name:'Copy Bot',desc:'AI-powered copywriting assistant trained on brand voice. Generate headlines, body copy, and captions in seconds.',cat:'Copy',tags:['AI','copy','automation'],link:'#'},
+  {name:'Curated Goose Skills',desc:'Curated library of Goose AI skills for brand creative work. Image analysis, copy review, asset tagging.',cat:'Tools',tags:['AI','Goose','skills'],link:'#'},
+  {name:'Legal Asset Checklist',desc:'Verify licensing status, model releases, and usage rights before any campaign or external publication.',cat:'Legal',tags:['legal','licensing','compliance'],link:'#'},
+  {name:'Vanta Deck Maker',desc:'Automated deck generation from templates and brand assets. Populate slides with approved imagery and copy.',cat:'Decks',tags:['decks','presentations','automation'],link:'#'},
+  {name:'Brand Voice Guide',desc:'Definitive guide to writing in the brand voice. Covers tone, vocabulary, channel-specific guidelines.',cat:'Copy',tags:['brand','voice','guidelines'],link:'#'},
+  {name:'AI Tool Directory',desc:'Curated directory of approved AI tools for creative use. Each entry includes access instructions and restrictions.',cat:'Tools',tags:['AI','tools','directory'],link:'#'},
+  {name:'Licensing FAQ',desc:'FAQs on asset licensing, stock photography usage, music rights, and third-party content.',cat:'Legal',tags:['legal','licensing','FAQ'],link:'#'},
+  {name:'Campaign Brief Template',desc:'Standard campaign brief template with fields for objectives, audience, messaging, channels, and timeline.',cat:'Decks',tags:['campaign','brief','template'],link:'#'},
+];
+function renderAIContent(){
+  var content=document.getElementById('aiContent');
+  var catColors={campaign:'#60a5fa',copywriting:'#a78bfa',image:'#f472b6',strategy:'#34d399',social:'#fbbf24',wevi:'#e94560',video:'#f87171',copy:'#a78bfa',visual:'#f472b6'};
+  var h='';
+  if(activeAICat==='overview'){
+    var upcoming=AI_EDU.filter(function(e){return e.status==='upcoming'});
+    h+='<div style="margin-bottom:20px"><div style="font-size:22px;font-weight:800;margin-bottom:4px">AI Studio</div>';
+    h+='<div style="font-size:13px;color:var(--text2)">Assets, workflows, resources, and team learning — all in one place.</div></div>';
+    h+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:24px">';
+    [{cat:'dam',icon:'fa-layer-group',label:'DAM',count:AI_ASSETS.length,desc:'Browse brand assets'},{cat:'all',icon:'fa-wand-magic-sparkles',label:'AI Workflows',count:PROMPTS.length,desc:'Prompt library'},{cat:'tools',icon:'fa-bookmark',label:'Resources',count:AI_RESOURCES.length,desc:'Tools & guides'},{cat:'education',icon:'fa-graduation-cap',label:'Education',count:AI_EDU.length,desc:'Sessions & recordings'}].forEach(function(s){
+      h+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .2s" onclick="setAICat(\''+s.cat+'\')" onmouseover="this.style.borderColor=\'var(--accent2)\'" onmouseout="this.style.borderColor=\'var(--border)\'">';
+      h+='<div style="font-size:18px;margin-bottom:8px;color:var(--accent2)"><i class="fa-solid '+s.icon+'"></i></div>';
+      h+='<div style="font-size:22px;font-weight:800;line-height:1">'+s.count+'</div>';
+      h+='<div style="font-size:12px;font-weight:700;margin-top:4px">'+s.label+'</div>';
+      h+='<div style="font-size:11px;color:var(--text2);margin-top:2px">'+s.desc+'</div></div>';
+    });
+    h+='</div>';
+    if(upcoming.length){
+      h+='<div class="section-header"><div class="section-title"><i class="fa-solid fa-calendar-check"></i> Up Next</div><div class="section-action" onclick="setAICat(\'education\')">View all →</div></div>';
+      h+='<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px">';
+      upcoming.slice(0,3).forEach(function(e){
+        h+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:12px">';
+        h+='<div style="width:38px;text-align:center;flex-shrink:0"><div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--text3)">'+e.date.split(' ')[0]+'</div><div style="font-size:18px;font-weight:800;line-height:1.1">'+e.date.split(' ')[1].replace(',','')+'</div></div>';
+        h+='<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700">'+esc(e.title)+'</div><div style="font-size:11px;color:var(--text2);margin-top:2px">'+e.time+' · '+e.presenters.join(', ')+'</div></div>';
+        h+='<span style="font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(0,214,50,.1);border:1px solid rgba(0,214,50,.2);color:var(--accent2);flex-shrink:0">'+esc(e.format)+'</span>';
+        h+='</div>';
+      });
+      h+='</div>';
+    }
+    h+='<div class="section-header"><div class="section-title"><i class="fa-solid fa-layer-group"></i> Recent Assets</div><div class="section-action" onclick="setAICat(\'dam\')">View all →</div></div>';
+    h+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px">';
+    AI_ASSETS.slice(0,6).forEach(function(a){
+      h+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px">';
+      h+='<div style="font-size:22px;margin-bottom:6px">'+a.thumb+'</div>';
+      h+='<div style="font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--accent2);font-weight:700">'+esc(a.category)+'</div>';
+      h+='<div style="font-size:12px;font-weight:700;margin-top:2px;line-height:1.3">'+esc(a.title)+'</div>';
+      h+='<div style="font-size:10px;color:var(--text3);margin-top:4px">'+esc(a.owner)+'</div></div>';
+    });
+    h+='</div>';
+    content.innerHTML=h;return;
+  }
+  if(activeAICat==='dam'){
+    var damSearch=document.getElementById('aiDamSearch')?document.getElementById('aiDamSearch').value.toLowerCase():'';
+    var damFilter=document.getElementById('aiDamFilter')?document.getElementById('aiDamFilter').value:'All';
+    var damItems=AI_ASSETS.filter(function(a){
+      if(damFilter!=='All'&&a.category!==damFilter)return false;
+      if(damSearch){var hay=(a.title+a.category+a.tags.join(' ')+a.owner).toLowerCase();if(!hay.includes(damSearch))return false;}
+      return true;
+    });
+    h+='<div class="section-header"><div class="section-title"><i class="fa-solid fa-layer-group"></i> Digital Asset Library</div><div class="section-action">'+AI_ASSETS.length+' assets</div></div>';
+    h+='<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">';
+    h+='<div style="display:flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--surface);padding:0 10px;height:32px;border-radius:6px;flex:1;max-width:260px"><i class="fa-solid fa-magnifying-glass" style="font-size:11px;color:var(--text3)"></i><input id="aiDamSearch" type="text" placeholder="Search assets…" oninput="renderAIContent()" style="border:none;outline:none;background:transparent;font-size:13px;font-family:inherit;flex:1;color:var(--text)"></div>';
+    h+='<select id="aiDamFilter" onchange="renderAIContent()" style="border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:11px;padding:0 10px;height:32px;border-radius:6px;font-family:inherit;outline:none"><option>All</option><option>Photography</option><option>Illustration</option><option>3D</option><option>Graphic</option><option>UI</option></select></div>';
+    if(!damItems.length){h+='<div style="text-align:center;padding:40px;color:var(--text3)">No assets found</div>';content.innerHTML=h;return;}
+    h+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px">';
+    damItems.forEach(function(a){
+      h+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 14px;cursor:pointer;transition:border-color .2s" onmouseover="this.style.borderColor=\'var(--border2)\'" onmouseout="this.style.borderColor=\'var(--border)\'">';
+      h+='<div style="font-size:28px;margin-bottom:8px">'+a.thumb+'</div>';
+      h+='<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent2)">'+esc(a.category)+'</div>';
+      h+='<div style="font-size:13px;font-weight:700;margin-top:4px;line-height:1.3">'+esc(a.title)+'</div>';
+      h+='<div style="font-size:10px;color:var(--text3);margin-top:5px">'+esc(a.owner)+' · '+esc(a.date)+'</div>';
+      h+='<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:8px">'+a.tags.slice(0,3).map(function(t){return'<span style="font-size:9px;padding:2px 5px;border-radius:4px;background:rgba(0,0,0,.04);color:var(--text3);border:1px solid var(--border)">'+esc(t)+'</span>'}).join('')+'</div>';
+      h+='<a href="#" style="display:inline-flex;align-items:center;gap:4px;margin-top:10px;font-size:10px;font-weight:700;color:var(--accent2);text-decoration:none;padding:4px 8px;border:1px solid rgba(0,214,50,.3);border-radius:4px;background:rgba(0,214,50,.06)"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:8px"></i> Open</a>';
+      h+='</div>';
+    });
+    h+='</div>';
+    content.innerHTML=h;return;
+  }
+  if(activeAICat==='education'){
+    var upcoming2=AI_EDU.filter(function(e){return e.status==='upcoming'});
+    var past=AI_EDU.filter(function(e){return e.status==='past'});
+    h+='<div class="section-header"><div class="section-title"><i class="fa-solid fa-graduation-cap"></i> Education & Sessions</div></div>';
+    if(upcoming2.length){
+      h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--text2);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)">Upcoming</div>';
+      h+='<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px">';
+      upcoming2.forEach(function(e){
+        h+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:14px;align-items:flex-start">';
+        var parts=e.date.split(' ');
+        h+='<div style="width:44px;flex-shrink:0;border:1px solid var(--border);padding:6px 4px;text-align:center;border-radius:6px"><div style="font-size:8px;font-weight:700;text-transform:uppercase;color:var(--text3)">'+parts[0]+'</div><div style="font-size:20px;font-weight:800;line-height:1.1">'+parts[1].replace(',','')+'</div><div style="font-size:8px;color:var(--text3)">'+e.time.split(' ')[0]+'</div></div>';
+        h+='<div style="flex:1"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px"><div style="font-size:14px;font-weight:700">'+esc(e.title)+'</div><span style="font-size:9px;font-weight:700;padding:3px 7px;border-radius:4px;background:rgba(0,214,50,.1);border:1px solid rgba(0,214,50,.2);color:var(--accent2);flex-shrink:0;margin-top:2px">'+esc(e.format)+'</span></div>';
+        h+='<div style="font-size:11px;color:var(--text3);margin-top:4px"><i class="fa-regular fa-user" style="margin-right:3px"></i>'+e.presenters.join(', ')+'</div>';
+        h+='<div style="display:flex;gap:5px;margin-top:8px;flex-wrap:wrap">'+e.tags.map(function(t){return'<span style="font-size:9px;padding:2px 5px;border-radius:4px;background:rgba(0,0,0,.04);color:var(--text3);border:1px solid var(--border)">'+esc(t)+'</span>'}).join('')+'</div>';
+        h+='<button style="margin-top:10px;padding:5px 12px;border-radius:5px;border:none;background:var(--accent);color:#000;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit"><i class="fa-regular fa-calendar-plus" style="margin-right:4px"></i>Add to Calendar</button>';
+        h+='</div></div>';
+      });
+      h+='</div>';
+    }
+    if(past.length){
+      h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--text2);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)">Past Sessions</div>';
+      h+='<div style="display:flex;flex-direction:column;gap:8px">';
+      past.forEach(function(e){
+        h+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;opacity:.85">';
+        var parts2=e.date.split(' ');
+        h+='<div style="width:40px;flex-shrink:0;border:1px solid var(--border);padding:5px 4px;text-align:center;border-radius:5px"><div style="font-size:8px;font-weight:700;text-transform:uppercase;color:var(--text3)">'+parts2[0]+'</div><div style="font-size:18px;font-weight:800;line-height:1.1">'+parts2[1].replace(',','')+'</div></div>';
+        h+='<div style="flex:1"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px"><div style="font-size:13px;font-weight:700">'+esc(e.title)+'</div><span style="font-size:9px;padding:2px 7px;border-radius:4px;border:1px solid var(--border);color:var(--text3);flex-shrink:0;margin-top:2px">'+esc(e.format)+'</span></div>';
+        h+='<div style="font-size:10px;color:var(--text3);margin-top:3px">'+e.presenters.join(', ')+'</div>';
+        h+='<div style="display:flex;gap:5px;margin-top:7px">';
+        if(e.notesLink)h+='<a href="'+e.notesLink+'" style="font-size:10px;font-weight:700;color:var(--text2);text-decoration:none;padding:3px 8px;border:1px solid var(--border);border-radius:4px;display:inline-flex;align-items:center;gap:3px"><i class="fa-solid fa-file-lines" style="font-size:9px"></i> Notes</a>';
+        if(e.recordingLink)h+='<a href="'+e.recordingLink+'" style="font-size:10px;font-weight:700;color:var(--accent2);text-decoration:none;padding:3px 8px;border:1px solid rgba(0,214,50,.3);border-radius:4px;display:inline-flex;align-items:center;gap:3px;background:rgba(0,214,50,.06)"><i class="fa-solid fa-circle-play" style="font-size:9px"></i> Recording</a>';
+        h+='</div></div></div>';
+      });
+      h+='</div>';
+    }
+    content.innerHTML=h;return;
+  }
+  if(activeAICat==='saved'){
+    h='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:220px;color:var(--text2)"><i class="fa-regular fa-bookmark" style="font-size:40px;opacity:.3;margin-bottom:12px"></i><p style="font-size:14px">No saved prompts yet.</p></div>';
+    content.innerHTML=h;return;
+  }
+  if(activeAICat==='tools'){
+    h='<div class="section-header"><div class="section-title"><i class="fa-solid fa-bookmark"></i> Resources</div><div class="section-action">'+AI_RESOURCES.length+' items</div></div>';
+    h+='<div class="ai-tools-grid">';
+    AI_RESOURCES.forEach(function(r){
+      h+='<div class="tool-card" style="flex-direction:column;align-items:flex-start">';
+      h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;width:100%"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent3);flex:1">'+esc(r.cat)+'</div></div>';
+      h+='<div class="tool-body" style="width:100%"><div class="tool-name">'+esc(r.name)+'</div><div class="tool-desc" style="-webkit-line-clamp:3">'+esc(r.desc)+'</div></div>';
+      h+='<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:8px">'+r.tags.map(function(t){return'<span style="font-size:9px;padding:2px 5px;border-radius:4px;background:rgba(0,0,0,.04);color:var(--text3);border:1px solid var(--border)">'+esc(t)+'</span>'}).join('')+'</div>';
+      h+='<a href="'+r.link+'" style="margin-top:8px;font-size:10px;font-weight:700;color:var(--accent2);text-decoration:none;display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border:1px solid rgba(0,214,50,.3);border-radius:4px;background:rgba(0,214,50,.06)"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:8px"></i> Open</a>';
+      h+='</div>';
+    });
+    h+='</div>';
+    h+='<div class="section-header" style="margin-top:24px"><div class="section-title"><i class="fa-solid fa-toolbox"></i> Quick Access Tools</div></div>';
+    h+='<div class="ai-tools-grid">';
+    TOOLS.forEach(function(t){
+      h+='<a class="tool-card" href="'+t.url+'" target="_blank">';
+      h+='<div class="tool-icon">'+t.icon+'</div>';
+      h+='<div class="tool-body"><div class="tool-name">'+esc(t.name)+'</div><div class="tool-desc">'+esc(t.desc)+'</div><div class="tool-cat-lbl">'+esc(t.cat)+'</div></div>';
+      h+='</a>';
+    });
+    h+='</div>';
+    content.innerHTML=h;return;
+  }
+  var filtered=activeAICat==='all'?PROMPTS:PROMPTS.filter(function(p){
+    if(activeAICat==='copywriting')return p.cat==='copywriting'||p.cat==='copy';
+    if(activeAICat==='image')return p.cat==='image'||p.cat==='visual';
+    return p.cat===activeAICat;
+  });
+  h+='<div class="section-header"><div class="section-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Prompt Library</div><div class="section-action">'+filtered.length+' prompts · click to expand</div></div>';
+  h+='<div class="prompt-grid">';
+  filtered.forEach(function(p){
+    var catC=catColors[p.cat]||'var(--accent2)',v=p.vis;
+    h+='<div class="prompt-card" data-pid="'+p.id+'" onclick="togglePromptCard('+p.id+')">';
+    var isWevi=p.cat==='wevi';
+    h+='<div class="prompt-visual'+(isWevi?' pv-wevi':'')+'" style="background:'+v.bg+'">'+(isWevi?'<div class="wevi-node-overlay">'+WEVI_SVG+'</div>':'')+'<div class="prompt-visual-icon">'+v.icon+'</div><div class="prompt-visual-cat">'+esc(v.cat)+'</div><div class="prompt-visual-hint"><i class="fa-solid fa-up-right-and-down-left-from-center" style="font-size:8px"></i> expand</div></div>';
+    var impactCls=p.impact==='strategic'?'impact-strategic':p.impact==='tactical'?'impact-tactical':'impact-operational';
+    var impactLbl=p.impact?p.impact.charAt(0).toUpperCase()+p.impact.slice(1):'';
+    var trendCls=p.trend==='hot'?'trend-hot':p.trend==='popular'?'trend-popular':'trend-new';
+    var trendIcon=p.trend==='hot'?'🔥':p.trend==='popular'?'⭐':'✨';
+    var trendLbl=p.trend?p.trend.charAt(0).toUpperCase()+p.trend.slice(1):'';
+    h+='<div class="prompt-body"><div class="prompt-cat-lbl" style="color:'+catC+'">'+esc(p.cat.charAt(0).toUpperCase()+p.cat.slice(1))+'</div><div class="prompt-title">'+esc(p.title)+'</div><div class="prompt-preview">'+esc(p.preview)+'</div>';
+    if(p.impact||p.trend||p.timeSaved){
+      h+='<div class="prompt-meta-row">';
+      if(p.impact)h+='<span class="impact-badge '+impactCls+'">'+impactLbl+'</span>';
+      if(p.trend)h+='<span class="trend-badge '+trendCls+'">'+trendIcon+' '+trendLbl+'</span>';
+      if(p.timeSaved)h+='<span style="font-size:9px;color:var(--text3);display:flex;align-items:center;gap:3px"><i class="fa-regular fa-clock"></i>'+esc(p.timeSaved)+'</span>';
+      if(p.usedBy)h+='<span style="font-size:9px;color:var(--text3)">'+esc(p.usedBy)+'</span>';
+      h+='</div>';
+    }
+    h+='<div class="prompt-foot"><div class="prompt-tags">'+p.tags.map(function(t){return'<span class="ptag">'+esc(t)+'</span>'}).join('')+'</div><button class="prompt-use-btn" onclick="usePrompt(event,'+p.id+')">Use</button></div></div>';
+    h+='<div class="prompt-expanded"><div class="prompt-exp-lbl"><span>Full Prompt</span><button class="prompt-copy-btn" onclick="copyPrompt(event,'+p.id+')"><i class="fa-regular fa-copy"></i> Copy</button></div>';
+    h+='<div class="prompt-full-text">'+esc(p.full)+'</div>';
+    h+='<div class="prompt-tips"><strong>When to use</strong>'+esc(p.tips)+'</div>';
+    h+='<button class="prompt-attach-btn" onclick="showToast(\'Attached to project — select from dropdown\',\'#00D632\');event.stopPropagation()"><i class="fa-solid fa-paperclip"></i> Attach to Project</button>';
+    h+='<div class="prompt-collapse" onclick="togglePromptCard('+p.id+')"><i class="fa-solid fa-chevron-up" style="font-size:10px"></i> Collapse</div></div>';
+    h+='</div>';
+  });
+  h+='</div>';
+  h+='<div class="section-header" style="margin-top:24px"><div class="section-title"><i class="fa-regular fa-image"></i> AI Inspiration Board</div><div class="section-action"><i class="fa-solid fa-plus"></i> Add</div></div><div class="inspo-grid">';
+  INSPO.forEach(function(item){h+='<div class="inspo-card"><div class="inspo-thumb" style="background:'+item.bg+'">'+item.thumb+'</div><div class="inspo-body"><div class="inspo-title">'+esc(item.title)+'</div><div class="inspo-meta">'+esc(item.meta)+'</div></div></div>'});
+  h+='</div>';
+  content.innerHTML=h;
+}
+function togglePromptCard(id){
+  var card=document.querySelector('.prompt-card[data-pid="'+id+'"]');if(!card)return;
+  var wasExp=card.classList.contains('expanded');
+  document.querySelectorAll('.prompt-card.expanded').forEach(function(c){c.classList.remove('expanded')});
+  if(!wasExp){card.classList.add('expanded');card.scrollIntoView({behavior:'smooth',block:'nearest'})}
+}
+function usePrompt(e,id){e.stopPropagation();var p=PROMPTS.find(function(x){return x.id===id});if(p){document.getElementById('aiPromptInput').value=p.full;document.getElementById('aiPromptInput').focus();showToast('Full prompt loaded — customize and send!','#00D632')}}
+function copyPrompt(e,id){e.stopPropagation();var p=PROMPTS.find(function(x){return x.id===id});if(!p)return;navigator.clipboard.writeText(p.full).then(function(){showToast('Copied to clipboard!','#10b981')}).catch(function(){showToast('Prompt ready!','#10b981')})}
+function setAICat(cat){activeAICat=cat;document.querySelectorAll('.ai-cat').forEach(function(c){c.classList.toggle('active',c.dataset.cat===cat)});renderAIContent()}
+document.querySelectorAll('.ai-cat').forEach(function(cat){cat.addEventListener('click',function(){setAICat(this.dataset.cat)})});
+document.getElementById('aiSendBtn').addEventListener('click',function(){var v=document.getElementById('aiPromptInput').value.trim();if(!v)return;showToast('Prompt sent to AI Studio!','#00D632');document.getElementById('aiPromptInput').value=''});
+document.getElementById('aiPromptInput').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();document.getElementById('aiSendBtn').click()}});
+document.getElementById('randomPromptBtn').addEventListener('click',function(){var r=PROMPTS[Math.floor(Math.random()*PROMPTS.length)];document.getElementById('aiPromptInput').value=r.full;document.getElementById('aiPromptInput').focus();showToast('Random prompt loaded!','#00D632')});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.getElementById('projectModal').classList.remove('active');closeMemberPanel();document.getElementById('assignModalOverlay').classList.remove('active')}});
+// RESOURCE CENTER
+function renderResourceCenter(){
+  var catIcons={'Design & Creative':'fa-pen-ruler','AI Tools':'fa-wand-magic-sparkles','File Management':'fa-folder-open','Collaboration':'fa-people-group','Project Management':'fa-list-check'};
+  var catAnchors={'Design & Creative':'hub-design','AI Tools':'hub-ai','File Management':'hub-files','Collaboration':'hub-collab','Project Management':'hub-pm'};
+  // Sidebar
+  var sb='<div class="hub-sidebar">';
+  sb+='<h4>Navigate</h4>';
+  sb+='<button class="hub-nav-link active" onclick="hubScrollTo(\'hub-start\')"><i class="fa-solid fa-rocket" style="font-size:10px;width:12px;text-align:center"></i> Start Here</button>';
+  HUB_CATS.forEach(function(cat){
+    var ico=catIcons[cat]||'fa-circle',anchor=catAnchors[cat]||'';
+    var shortName=cat.replace('Design & Creative','Design').replace('File Management','Files').replace('Project Management','PM');
+    sb+='<button class="hub-nav-link" onclick="hubScrollTo(\''+anchor+'\')"><i class="fa-solid '+ico+'" style="font-size:10px;width:12px;text-align:center"></i> '+esc(shortName)+'</button>';
+  });
+  sb+='</div>';
+  // Main body
+  var h='<div class="hub-body">';
+  // Hero
+  h+='<div class="hub-hero"><div class="hub-hero-left"><h2>Resource Center</h2><p>Everything the Block Brand Creative team needs — design tools, AI, file storage, collaboration apps, and project management in one place.</p></div>';
+  h+='<div class="hub-search"><input type="text" id="hubSearch" placeholder="Search tools…"><i class="fa-solid fa-magnifying-glass"></i></div></div>';
+  // Start Here section
+  var startItems=RESOURCE_LINKS.filter(function(r){return r.startHere});
+  h+='<div id="hub-start" class="hub-start-section">';
+  h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><i class="fa-solid fa-rocket" style="color:var(--accent2);font-size:14px"></i><span style="font-size:14px;font-weight:700">Start Here</span><span style="font-size:11px;color:var(--text3);margin-left:4px">Most used by the team</span></div>';
+  h+='<div class="hub-start-grid">';
+  startItems.forEach(function(r){
+    h+='<a class="hub-start-card" href="'+r.url+'" target="_blank">';
+    h+='<div style="font-size:18px">'+r.icon+'</div>';
+    h+='<div><div style="font-size:12px;font-weight:700">'+esc(r.name)+'</div><div style="font-size:10px;color:var(--text3)">'+esc(r.sub)+'</div></div>';
+    h+='</a>';
+  });
+  h+='</div></div>';
+  // Category sections
+  HUB_CATS.forEach(function(cat){
+    var items=RESOURCE_LINKS.filter(function(r){return r.cat===cat});
+    if(!items.length)return;
+    var ico=catIcons[cat]||'fa-circle',anchor=catAnchors[cat]||'';
+    h+='<div class="hub-cat-section" id="'+anchor+'">';
+    h+='<div class="hub-cat-title"><i class="fa-solid '+ico+'"></i>'+esc(cat)+'<span style="font-size:10px;font-weight:400;color:var(--text3);margin-left:6px">'+items.length+' tools</span></div>';
+    h+='<div class="hub-grid">';
+    items.forEach(function(r){
+      var accessCls=r.access==='open'?'access-open':r.access==='request'?'access-request':'access-limited';
+      var accessLbl=r.access==='open'?'Open':r.access==='request'?'Request Access':'Limited';
+      h+='<div class="hub-card" onclick="window.open(\''+r.url+'\',\'_blank\')" style="cursor:pointer">';
+      h+='<div class="hub-card-top"><div class="hub-card-icon" style="background:rgba('+hexToRgb(r.color)+',.15);color:'+r.color+'">'+r.icon+'</div>';
+      h+='<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px"><div class="hub-card-name">'+esc(r.name)+'</div><span class="hub-access '+accessCls+'">'+accessLbl+'</span></div>';
+      h+='<div class="hub-card-sub">'+esc(r.sub)+'</div>';
+      if(r.lastUpdated)h+='<div class="hub-last-updated"><i class="fa-regular fa-clock"></i>Updated '+esc(r.lastUpdated)+'</div>';
+      h+='</div></div>';
+      h+='<div class="hub-card-desc">'+esc(r.desc)+'</div>';
+      if(r.quickActions&&r.quickActions.length){
+        h+='<div class="hub-card-actions">';
+        r.quickActions.forEach(function(qa){
+          h+='<button class="hub-quick-btn" onclick="event.stopPropagation();showToast(\'Opening '+qa+'…\',\'#00D632\')"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:8px"></i> '+esc(qa)+'</button>';
+        });
+        h+='</div>';
+      }
+      h+='</div>';
+    });
+    h+='</div></div>';
+  });
+  h+='</div>';
+  document.getElementById('tab-hub').innerHTML=sb+h;
+  var inp=document.getElementById('hubSearch');
+  if(inp)inp.addEventListener('input',function(){
+    var v=this.value.trim().toLowerCase();
+    document.querySelectorAll('#tab-hub .hub-card').forEach(function(c){
+      var nm=(c.querySelector('.hub-card-name')||{textContent:''}).textContent.toLowerCase();
+      var ds=(c.querySelector('.hub-card-desc')||{textContent:''}).textContent.toLowerCase();
+      c.style.display=(nm.indexOf(v)>-1||ds.indexOf(v)>-1||!v)?'':'none';
+    });
+  });
+}
+function hubScrollTo(id){
+  var el=document.getElementById(id);
+  if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('.hub-nav-link').forEach(function(b){b.classList.remove('active')});
+  var clicked=document.querySelector('.hub-nav-link[onclick*="'+id+'"]');
+  if(clicked)clicked.classList.add('active');
+}
+function hexToRgb(hex){if(!hex||hex.length<7)return'128,128,128';return parseInt(hex.slice(1,3),16)+','+parseInt(hex.slice(3,5),16)+','+parseInt(hex.slice(5,7),16)}
+renderDashboard();renderProjectList();buildCapFilterBar();buildProjWsFilterRow();renderResources();renderAIContent();renderResourceCenter();
+</script>
+</body>
+</html>
