@@ -6,22 +6,23 @@
 <title>Block Creative — Command Center</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#ffffff;--bg2:#f8f9fa;--bg3:#f0f2f5;
-  --surface:#ffffff;--surface2:#f5f7fa;
-  --text:#0a0a0a;--text2:#555555;--text3:#999999;
-  --accent:#00D632;--accent2:#007a1e;--accent3:#005c14;
-  --border:#e8e8e8;--border2:#d0d0d0;
-  --hover:rgba(0,214,50,0.07);--glow:rgba(0,214,50,0.15);
+  --bg:#0a0a0a;--bg2:#111111;--bg3:#1a1a1a;
+  --surface:#141414;--surface2:#1c1c1c;
+  --text:#f0f0f0;--text2:#888888;--text3:#555555;
+  --accent:#00D632;--accent2:#00ff3c;--accent3:#00b82b;
+  --border:#222222;--border2:#333333;
+  --hover:rgba(0,214,50,0.06);--glow:rgba(0,214,50,0.12);
 }
 html,body{height:100%;overflow:hidden}
 body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+.dash-greet-name,.hub-hero-left h2{font-family:'Playfair Display',Georgia,serif;letter-spacing:-.3px}
 ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 /* HEADER */
-.app-header{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:56px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;gap:16px}
+.app-header{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:52px;background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0;gap:16px}
 .header-brand{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .header-brand .logo{width:32px;height:32px;border-radius:8px;background:#00D632;display:flex;align-items:center;justify-content:center;font-size:16px}
 .header-brand h1{font-size:15px;font-weight:700;letter-spacing:.3px;white-space:nowrap}
@@ -29,12 +30,12 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .header-nav{display:flex;align-items:center;gap:2px;flex:1;justify-content:center}
 .nav-tab{padding:6px 16px;border-radius:6px;border:none;background:transparent;color:var(--text2);font-size:13px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;white-space:nowrap}
 .nav-tab:hover{background:var(--hover);color:var(--text)}
-.nav-tab.active{background:rgba(0,214,50,0.15);color:var(--accent2);font-weight:600}
+.nav-tab.active{background:rgba(0,214,50,0.12);color:var(--accent);font-weight:600}
 .nav-tab i{font-size:12px}
 .header-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .icon-btn{width:32px;height:32px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:13px}
 .icon-btn:hover{background:var(--accent);border-color:var(--accent);color:#000}
-.notif-dot{position:relative}.notif-dot::after{content:'';position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:#f87171;border:1.5px solid var(--bg2)}
+.notif-dot{position:relative}.notif-dot::after{content:'';position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:#f87171;border:1.5px solid var(--bg)}
 .avatar{width:32px;height:32px;border-radius:50%;background:#00D632;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;cursor:pointer;color:#000}
 /* LAYOUT */
 .app-main{flex:1;overflow:hidden;display:flex;flex-direction:column}
@@ -73,7 +74,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 @media(max-width:900px){.dash-grid{grid-template-columns:1fr}}
 .ws-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:10px}
 .ws-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:8px}
-.ws-card:hover{border-color:var(--border2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.ws-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,214,50,.06)}
 .ws-card-top{display:flex;align-items:center;gap:8px}
 .ws-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .ws-name{font-size:13px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -318,7 +319,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 .ms-bullet-date{font-size:10px;font-weight:700}
 /* PROJECT TEAM STRIP */
 .proj-team-strip{display:flex;align-items:center;gap:3px;margin-top:5px;flex-wrap:wrap}
-.pt-av{width:20px;height:20px;border-radius:50%;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1.5px solid var(--bg2)}
+.pt-av{width:20px;height:20px;border-radius:50%;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1.5px solid var(--bg)}
 .pt-more{font-size:10px;color:var(--text3);margin-left:2px;font-weight:600}
 /* PROJECTS SORT */
 .proj-sort-group{display:flex;align-items:center;gap:5px;margin-left:auto;flex-shrink:0}
@@ -369,7 +370,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans
 #tab-projects{flex-direction:column}
 .proj-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;padding:20px}
 .proj-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;position:relative}
-.proj-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.1);border-color:var(--border2)}
+.proj-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.4);border-color:var(--border2)}
 .proj-card.card-delayed{border-left:3px solid #ef4444}
 .proj-card.card-at-risk{border-left:3px solid #f59e0b}
 .proj-card.card-on-track{border-left:3px solid rgba(16,185,129,.3)}
